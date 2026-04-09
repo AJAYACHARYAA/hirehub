@@ -1,0 +1,1494 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HIREHUB - Premium Service Platform</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+        :root {
+            --primary: #1e40af;
+            --secondary: #1f2937;
+            --accent: #dc2626;
+            --success: #059669;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%); }
+        .font-display { font-family: 'Poppins', sans-serif; font-weight: 700; }
+        
+        .glass-header {
+            backdrop-filter: blur(20px);
+            background: linear-gradient(to right, #003f87 0%, #1e40af 100%);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 50;
+            border-bottom: 3px solid #fbbf24;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .page-section { min-height: calc(100vh - 70px); padding-top: 80px; }
+        .hidden { display: none; }
+        
+        .gradient-primary { background: linear-gradient(to right, #003f87 0%, #1e40af 100%); }
+        .gradient-accent { background: linear-gradient(to right, #dc2626 0%, #b91c1c 100%); }
+        
+        .tab-active { border-bottom: 3px solid #dc2626; color: #dc2626; font-weight: 600; }
+        
+        .govt-form-container {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 0;
+        }
+        
+        .govt-header {
+            background: linear-gradient(to right, #003f87 0%, #1e40af 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 3px solid #fbbf24;
+        }
+        
+        .form-section {
+            border-bottom: 1px solid #e5e7eb;
+            padding: 20px;
+        }
+        
+        .form-section:last-child {
+            border-bottom: none;
+        }
+        
+        .form-section-title {
+            font-weight: 700;
+            color: #003f87;
+            font-size: 14px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e5e7eb;
+        }
+        
+        .checkbox-group {
+            margin-top: 15px;
+            padding: 12px;
+            background: #f9fafb;
+            border-left: 3px solid #fbbf24;
+        }
+        
+        .checkbox-group label {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            margin-top: 3px;
+            cursor: pointer;
+        }
+        
+        .otp-input {
+            width: 56px;
+            height: 56px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            margin: 0 6px;
+            background: white;
+            transition: all 0.2s;
+        }
+        
+        .otp-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.1);
+            outline: none;
+        }
+        
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, #1f2937, #111827);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 50px;
+            z-index: 1000;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+            border-left: 4px solid var(--accent);
+            font-weight: 500;
+        }
+        
+        .business-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .business-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+            border-color: var(--accent);
+        }
+        
+        .btn-premium {
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-primary {
+            background: #1e40af;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1e3a8a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.2);
+        }
+        
+        .btn-secondary {
+            background: #dc2626;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #b91c1c;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 0;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+            background: white;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: #1e40af;
+            box-shadow: inset 0 0 0 1px #1e40af;
+        }
+        
+        .category-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 16px;
+            background: white;
+            border-radius: 14px;
+            border: 2px solid #e5e7eb;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .category-btn:hover {
+            border-color: var(--accent);
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.05), rgba(139, 92, 246, 0.05));
+            transform: translateY(-2px);
+        }
+        
+        .category-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fade-in { animation: fadeIn 0.3s ease forwards; }
+    </style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+ </head>
+ <body>
+  <div id="app"><!-- Header -->
+   <header class="glass-header">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+     <div class="flex items-center gap-3 cursor-pointer" onclick="navigateTo('home')">
+      <div class="w-11 h-11 rounded-full gradient-accent flex items-center justify-center shadow-lg"><span class="text-white font-display font-bold text-lg">H</span>
+      </div>
+      <div><span class="font-display font-bold text-white text-lg">HIREHUB</span>
+       <p class="text-xs text-blue-200">Premium Services</p>
+      </div>
+     </div>
+     <div class="flex items-center gap-4"><button onclick="navigateTo('userAuth')" class="hidden sm:block text-white/80 hover:text-white px-4 py-2 rounded-lg transition font-medium"> Login </button> <button onclick="navigateTo('myBookings')" class="hidden sm:block text-white/80 hover:text-white px-4 py-2 rounded-lg transition font-medium"> My Bookings </button> <button onclick="navigateTo('admin')" class="hidden sm:block text-white/80 hover:text-white px-4 py-2 rounded-lg transition font-medium"> Admin </button> <button onclick="navigateTo('partnerAuth')" class="btn-premium btn-secondary"> Partner </button>
+     </div>
+    </div>
+   </header><!-- Home Page -->
+   <div id="page-home" class="page-section"><!-- Hero Section -->
+    <div class="gradient-primary text-white py-20 px-4">
+     <div class="max-w-4xl mx-auto text-center">
+      <h1 class="font-display text-5xl md:text-6xl font-bold mb-4 leading-tight">Find Premium<br><span class="text-blue-200">Service Professionals</span></h1>
+      <p class="text-lg text-blue-100 mb-10 max-w-2xl mx-auto">Trusted, verified experts ready to help. From plumbing to tutoring, find the perfect professional instantly.</p>
+      <div class="flex gap-3 max-w-2xl mx-auto bg-white rounded-full p-2 shadow-2xl"><input type="text" id="searchInput" placeholder="Search for services..." class="flex-1 px-6 py-3 text-gray-800 rounded-full outline-none font-medium"> <button onclick="performSearch()" class="btn-premium btn-secondary px-8"> Search </button>
+      </div>
+     </div>
+    </div><!-- Categories Section -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-16">
+     <h2 class="font-display text-3xl font-bold text-center mb-4">Popular Services</h2>
+     <p class="text-center text-gray-600 mb-12">Browse our most popular service categories</p>
+     <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4" id="categoryGrid"></div>
+    </div><!-- Featured Providers Section -->
+    <div class="bg-gradient-to-br from-white via-blue-50 to-purple-50 py-16 px-4">
+     <div class="max-w-7xl mx-auto">
+      <h2 class="font-display text-3xl font-bold mb-4">Top Rated Professionals</h2>
+      <p class="text-gray-600 mb-12">Highly rated and verified service providers near you</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="featuredGrid"></div>
+     </div>
+    </div>
+   </div><!-- Search Results Page -->
+   <div id="page-search" class="page-section hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+     <div class="mb-8">
+      <h1 class="font-display text-3xl font-bold mb-2" id="searchTitle">Search Results</h1>
+      <p class="text-gray-600" id="searchCount"></p>
+     </div>
+     <div class="flex gap-3 mb-8 flex-wrap"><button class="px-6 py-2 rounded-full bg-white border-2 border-gray-200 font-medium hover:border-indigo-500 transition" onclick="setFilter('all')">All</button> <button class="px-6 py-2 rounded-full bg-white border-2 border-gray-200 font-medium hover:border-indigo-500 transition" onclick="setFilter('rating')">Top Rated</button> <button class="px-6 py-2 rounded-full bg-white border-2 border-gray-200 font-medium hover:border-indigo-500 transition" onclick="setFilter('open')">Open Now</button>
+     </div>
+     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="searchResults"></div>
+    </div>
+   </div><!-- User Auth Page -->
+   <div id="page-userAuth" class="page-section hidden">
+    <div class="max-w-md mx-auto px-4 py-8">
+     <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+      <div class="gradient-primary text-white p-6 text-center">
+       <h2 class="font-display text-2xl font-bold">Welcome</h2>
+       <p class="text-blue-100 text-sm mt-1">Login or create account to book services</p>
+      </div>
+      <div class="flex border-b"><button onclick="showLoginTab()" id="loginTabBtn" class="flex-1 py-4 text-center font-semibold tab-active"> Login </button> <button onclick="showSignupTab()" id="signupTabBtn" class="flex-1 py-4 text-center text-gray-500"> Sign Up </button>
+      </div>
+      <div class="p-8" id="authFormContainer"></div>
+     </div>
+    </div>
+   </div><!-- Partner Auth Page -->
+   <div id="page-partnerAuth" class="page-section hidden">
+    <div class="max-w-lg mx-auto px-4 py-8">
+     <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+      <div class="gradient-accent text-white p-6 text-center">
+       <h2 class="font-display text-2xl font-bold">Become a Partner</h2>
+       <p class="text-orange-100 text-sm mt-1">Register as a service provider</p>
+      </div>
+      <div class="p-8" id="partnerFormContainer"></div>
+     </div>
+    </div>
+   </div><!-- Booking Page -->
+   <div id="page-booking" class="page-section hidden">
+    <div class="max-w-4xl mx-auto px-4 py-8">
+     <h1 class="font-display text-3xl font-bold mb-2">Book a Service</h1>
+     <p class="text-gray-600 mb-6" id="bookingProviderInfo"></p>
+     <div class="bg-white rounded-2xl shadow-xl p-8">
+      <div class="grid md:grid-cols-2 gap-8">
+       <div id="bookingForm"></div>
+       <div id="bookingSummary" class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-6"></div>
+      </div>
+     </div>
+    </div>
+   </div><!-- My Bookings Page -->
+   <div id="page-myBookings" class="page-section hidden">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+     <h1 class="font-display text-3xl font-bold mb-2">My Bookings</h1>
+     <p class="text-gray-600 mb-6">Track and manage all your service bookings</p>
+     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+      <div class="bg-white rounded-xl p-4 shadow border-l-4 border-blue-500">
+       <p class="text-gray-600 text-sm">Total Bookings</p>
+       <p class="font-display text-3xl font-bold text-gray-900" id="totalBookings">0</p>
+      </div>
+      <div class="bg-white rounded-xl p-4 shadow border-l-4 border-yellow-500">
+       <p class="text-gray-600 text-sm">Pending</p>
+       <p class="font-display text-3xl font-bold text-gray-900" id="pendingBookings">0</p>
+      </div>
+      <div class="bg-white rounded-xl p-4 shadow border-l-4 border-green-500">
+       <p class="text-gray-600 text-sm">Confirmed</p>
+       <p class="font-display text-3xl font-bold text-gray-900" id="confirmedBookings">0</p>
+      </div>
+      <div class="bg-white rounded-xl p-4 shadow border-l-4 border-purple-500">
+       <p class="text-gray-600 text-sm">Completed</p>
+       <p class="font-display text-3xl font-bold text-gray-900" id="completedBookings">0</p>
+      </div>
+     </div>
+     <div id="myBookingsList" class="grid grid-cols-1 gap-4"></div>
+    </div>
+   </div><!-- Admin Dashboard -->
+   <div id="page-admin" class="page-section hidden">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+     <div class="flex items-center justify-between mb-8">
+      <div>
+       <h1 class="font-display text-3xl font-bold">Admin Dashboard</h1>
+       <p class="text-gray-600">Manage providers, bookings, and platform</p>
+      </div><button onclick="navigateTo('home')" class="btn-premium btn-primary">← Back to Home</button>
+     </div>
+     <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+      <div class="bg-white rounded-xl p-6 shadow border-t-4 border-indigo-500">
+       <p class="text-gray-600 text-sm font-medium">Total Providers</p>
+       <p class="font-display text-4xl font-bold text-gray-900" id="adminTotalProviders">0</p>
+      </div>
+      <div class="bg-white rounded-xl p-6 shadow border-t-4 border-blue-500">
+       <p class="text-gray-600 text-sm font-medium">Total Bookings</p>
+       <p class="font-display text-4xl font-bold text-gray-900" id="adminTotalBookings">0</p>
+      </div>
+      <div class="bg-white rounded-xl p-6 shadow border-t-4 border-green-500">
+       <p class="text-gray-600 text-sm font-medium">Confirmed</p>
+       <p class="font-display text-4xl font-bold text-gray-900" id="adminConfirmedBookings">0</p>
+      </div>
+      <div class="bg-white rounded-xl p-6 shadow border-t-4 border-purple-500">
+       <p class="text-gray-600 text-sm font-medium">Pending Review</p>
+       <p class="font-display text-4xl font-bold text-gray-900" id="adminPendingReview">0</p>
+      </div>
+     </div>
+     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div class="bg-white rounded-2xl shadow-lg p-6">
+       <h2 class="font-display text-xl font-bold mb-4">Recent Providers</h2>
+       <div id="adminProvidersList" class="space-y-3"></div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-lg p-6">
+       <h2 class="font-display text-xl font-bold mb-4">Recent Bookings</h2>
+       <div id="adminBookingsList" class="space-y-3"></div>
+      </div>
+     </div>
+     <div class="bg-white rounded-2xl shadow-lg p-6 mt-6">
+      <h2 class="font-display text-xl font-bold mb-4">All Bookings</h2>
+      <div class="overflow-x-auto">
+       <table class="w-full text-sm">
+        <thead class="bg-gray-50 border-b-2 border-gray-200">
+         <tr>
+          <th class="px-4 py-3 text-left font-semibold">Booking ID</th>
+          <th class="px-4 py-3 text-left font-semibold">Provider</th>
+          <th class="px-4 py-3 text-left font-semibold">Customer</th>
+          <th class="px-4 py-3 text-left font-semibold">Date &amp; Time</th>
+          <th class="px-4 py-3 text-left font-semibold">Status</th>
+          <th class="px-4 py-3 text-left font-semibold">Action</th>
+         </tr>
+        </thead>
+        <tbody id="adminBookingsTable" class="divide-y divide-gray-200"></tbody>
+       </table>
+      </div>
+     </div>
+    </div>
+   </div><!-- Toast Notification -->
+   <div id="toast" class="toast hidden"></div>
+  </div>
+  <script>
+        const BACKEND_URL = "http://localhost:5000";
+
+        const categories = [
+            { name: "Plumbers", icon: "wrench" },
+            { name: "Electricians", icon: "zap" },
+            { name: "Carpenters", icon: "hammer" },
+            { name: "Painters", icon: "paintbrush" },
+            { name: "Tailors", icon: "scissors" },
+            { name: "Mechanics", icon: "settings" },
+            { name: "Drivers", icon: "car" },
+            { name: "Tutors", icon: "book-open" },
+            { name: "Lawyers", icon: "scale" },
+        ];
+
+        const businesses = [
+            {
+                id: 1,
+                name: "QuickFix Plumbing",
+                person: "Rajesh Kumar",
+                category: "Plumbers",
+                rating: 4.8,
+                reviews: 324,
+                address: "Mumbai",
+                price: "₹300-800",
+                open: true,
+                tags: ["Emergency"],
+                desc: "Expert plumbing solutions",
+            },
+            {
+                id: 2,
+                name: "Bright Spark Electricals",
+                person: "Amit Sharma",
+                category: "Electricians",
+                rating: 4.6,
+                reviews: 218,
+                address: "Delhi",
+                price: "₹400-1200",
+                open: true,
+                tags: ["Certified"],
+                desc: "Professional electrical services",
+            },
+            {
+                id: 3,
+                name: "WoodCraft Carpentry",
+                person: "Suresh Nair",
+                category: "Carpenters",
+                rating: 4.9,
+                reviews: 156,
+                address: "Bangalore",
+                price: "₹500-2000",
+                open: false,
+                tags: ["Premium"],
+                desc: "Custom furniture & woodwork",
+            },
+            {
+                id: 4,
+                name: "ProPaint Studios",
+                person: "Vikram Desai",
+                category: "Painters",
+                rating: 4.7,
+                reviews: 289,
+                address: "Pune",
+                price: "₹200-600",
+                open: true,
+                tags: ["Fast"],
+                desc: "Interior & exterior painting",
+            },
+            {
+                id: 5,
+                name: "Expert Mechanics",
+                person: "Arjun Singh",
+                category: "Mechanics",
+                rating: 4.5,
+                reviews: 195,
+                address: "Hyderabad",
+                price: "₹150-500",
+                open: true,
+                tags: ["Trusted"],
+                desc: "Complete automotive services",
+            },
+            {
+                id: 6,
+                name: "Drive Safe Services",
+                person: "Karan Patel",
+                category: "Drivers",
+                rating: 4.9,
+                reviews: 412,
+                address: "Chennai",
+                price: "₹15/km",
+                open: true,
+                tags: ["24/7"],
+                desc: "Safe & reliable driving",
+            },
+        ];
+
+        let currentFilter = "all";
+        let currentSearch = "";
+        let verifiedMobiles = {};
+        let verifiedEmails = {};
+        let userEmail = null;
+        let currentProvider = null;
+        
+        // Bookings storage (in demo mode)
+        let bookings = [];
+        let providers = [];
+        let bookingCounter = 1000;
+
+        function showToast(msg) {
+            const toast = document.getElementById("toast");
+            toast.textContent = msg;
+            toast.classList.remove("hidden");
+            setTimeout(() => toast.classList.add("hidden"), 3000);
+        }
+
+        function navigateTo(page) {
+            document.querySelectorAll(".page-section").forEach(s => s.classList.add("hidden"));
+            document.getElementById(`page-${page}`).classList.remove("hidden");
+            if (page === "search") renderSearchResults();
+            if (page === "userAuth") showLoginTab();
+            if (page === "partnerAuth") showPartnerForm();
+            if (page === "myBookings") renderMyBookings();
+            if (page === "admin") renderAdminDashboard();
+        }
+
+        function renderCategories() {
+            const grid = document.getElementById("categoryGrid");
+            grid.innerHTML = categories.map(c => `
+                <button onclick="searchByCategory('${c.name}')" class="category-btn">
+                    <div class="category-icon">
+                        <i data-lucide="${c.icon}" class="w-6 h-6 text-indigo-600"></i>
+                    </div>
+                    <span class="text-xs font-semibold text-center">${c.name}</span>
+                </button>
+            `).join("");
+            lucide.createIcons();
+        }
+
+        function renderFeatured() {
+            const grid = document.getElementById("featuredGrid");
+            grid.innerHTML = businesses.slice(0, 6).map(b => createBusinessCard(b)).join("");
+            lucide.createIcons();
+        }
+
+        function createBusinessCard(b) {
+            return `
+                <div class="business-card animate-fade-in" onclick="showBusinessDetail(${b.id})">
+                    <div class="h-40 gradient-primary relative overflow-hidden">
+                        ${b.open ? '<span class="absolute top-3 left-3 bg-green-500 text-white text-xs px-3 py-1 rounded-full font-semibold">Open Now</span>' : ''}
+                        <div class="absolute top-3 right-3 flex gap-2">
+                            ${b.tags.map(t => `<span class="bg-white/20 text-white text-xs px-2 py-1 rounded-full backdrop-blur">${t}</span>`).join('')}
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="font-display text-lg font-bold text-gray-900">${b.name}</h3>
+                        <p class="text-sm text-indigo-600 font-medium mb-3">${b.category} • ${b.person}</p>
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="flex text-yellow-400">
+                                <i data-lucide="star" class="w-4 h-4 fill-current"></i>
+                            </div>
+                            <span class="font-bold text-gray-900">${b.rating}</span>
+                            <span class="text-xs text-gray-500">(${b.reviews} reviews)</span>
+                        </div>
+                        <p class="text-sm text-gray-600 mb-3">${b.desc}</p>
+                        <div class="flex items-center justify-between pt-3 border-t">
+                            <span class="font-bold text-indigo-600">${b.price}</span>
+                            <button onclick="startBooking(event, ${b.id})" class="text-sm font-semibold text-white bg-indigo-600 px-3 py-1 rounded-lg hover:bg-indigo-700">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSearchResults() {
+            let results = businesses.filter(b =>
+                b.name.toLowerCase().includes(currentSearch.toLowerCase()) ||
+                b.category.toLowerCase().includes(currentSearch.toLowerCase())
+            );
+
+            if (currentFilter === "rating") results.sort((a, b) => b.rating - a.rating);
+            if (currentFilter === "open") results = results.filter(b => b.open);
+
+            document.getElementById("searchTitle").innerHTML = currentSearch ? `Results for "${currentSearch}"` : "All Services";
+            document.getElementById("searchCount").innerHTML = `Found ${results.length} professional${results.length !== 1 ? 's' : ''}`;
+            document.getElementById("searchResults").innerHTML = results.map(b => createBusinessCard(b)).join("");
+            lucide.createIcons();
+        }
+
+        function setFilter(filter) {
+            currentFilter = filter;
+            renderSearchResults();
+        }
+
+        function performSearch() {
+            currentSearch = document.getElementById("searchInput").value;
+            navigateTo("search");
+        }
+
+        function searchByCategory(cat) {
+            currentSearch = cat;
+            navigateTo("search");
+        }
+
+        function showBusinessDetail(id) {
+            const b = businesses.find(x => x.id === id);
+            showToast(`📞 Contact ${b.name}`);
+        }
+
+        function startBooking(e, providerId) {
+            e.stopPropagation();
+            if (!userEmail) {
+                showToast("Please login first to book a service");
+                return;
+            }
+            currentProvider = businesses.find(b => b.id === providerId);
+            renderBookingPage();
+            navigateTo("booking");
+        }
+
+        function renderBookingPage() {
+            const provider = currentProvider;
+            document.getElementById("bookingProviderInfo").innerHTML = `
+                <span class="font-semibold text-gray-900">${provider.name}</span> • ${provider.category} • ${provider.person}
+            `;
+
+            const dates = [];
+            for (let i = 1; i <= 7; i++) {
+                const d = new Date();
+                d.setDate(d.getDate() + i);
+                dates.push(d);
+            }
+
+            const timeSlots = ["09:00 AM", "10:00 AM", "11:00 AM", "02:00 PM", "03:00 PM", "04:00 PM"];
+
+            document.getElementById("bookingForm").innerHTML = `
+                <form onsubmit="submitBooking(event)">
+                    <h3 class="font-display text-lg font-bold mb-4">Booking Details</h3>
+                    
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold mb-2">Select Date</label>
+                        <select id="bookingDate" class="input-field" required>
+                            <option value="">Choose a date...</option>
+                            ${dates.map(d => `<option value="${d.toISOString().split('T')[0]}">${d.toLocaleDateString()}</option>`).join('')}
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold mb-2">Select Time</label>
+                        <div class="grid grid-cols-3 gap-2">
+                            ${timeSlots.map(t => `
+                                <label class="flex items-center">
+                                    <input type="radio" name="bookingTime" value="${t}" required class="mr-2">
+                                    <span class="text-sm">${t}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-sm font-semibold mb-2">Add Notes</label>
+                        <textarea id="bookingNotes" class="input-field h-24" placeholder="Any specific requirements..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-premium btn-primary w-full">Confirm Booking</button>
+                </form>
+            `;
+
+            document.getElementById("bookingSummary").innerHTML = `
+                <h3 class="font-display text-lg font-bold mb-4">Booking Summary</h3>
+                <div class="space-y-3 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Service</span>
+                        <span class="font-semibold">${provider.name}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Provider</span>
+                        <span class="font-semibold">${provider.person}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Category</span>
+                        <span class="font-semibold">${provider.category}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Rating</span>
+                        <span class="font-semibold">★ ${provider.rating}</span>
+                    </div>
+                    <hr class="my-3 border-gray-200">
+                    <div class="flex justify-between font-semibold">
+                        <span>Estimated Cost</span>
+                        <span class="text-indigo-600">${provider.price}</span>
+                    </div>
+                </div>
+                <div class="mt-6 p-4 bg-white rounded-lg">
+                    <p class="text-xs text-gray-600 mb-2"><i data-lucide="phone" class="w-4 h-4 inline"></i> Contact</p>
+                    <p class="font-semibold">+91-9876543210</p>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        function submitBooking(e) {
+            e.preventDefault();
+            const date = document.getElementById("bookingDate").value;
+            const time = document.querySelector('input[name="bookingTime"]:checked').value;
+            const notes = document.getElementById("bookingNotes").value;
+
+            const booking = {
+                id: ++bookingCounter,
+                provider: currentProvider.name,
+                category: currentProvider.category,
+                customer: userEmail,
+                date: date,
+                time: time,
+                notes: notes,
+                status: "pending",
+                createdAt: new Date().toISOString()
+            };
+
+            bookings.push(booking);
+            showToast(`✓ Booking #${booking.id} confirmed! Pending approval.`);
+            setTimeout(() => navigateTo("myBookings"), 1500);
+        }
+
+        function renderMyBookings() {
+            const userBookings = bookings.filter(b => b.customer === userEmail);
+            
+            const stats = {
+                total: userBookings.length,
+                pending: userBookings.filter(b => b.status === "pending").length,
+                confirmed: userBookings.filter(b => b.status === "confirmed").length,
+                completed: userBookings.filter(b => b.status === "completed").length
+            };
+
+            document.getElementById("totalBookings").textContent = stats.total;
+            document.getElementById("pendingBookings").textContent = stats.pending;
+            document.getElementById("confirmedBookings").textContent = stats.confirmed;
+            document.getElementById("completedBookings").textContent = stats.completed;
+
+            const statusBadge = (status) => {
+                const badges = {
+                    pending: '<span class="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800">⏳ Pending</span>',
+                    confirmed: '<span class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">✓ Confirmed</span>',
+                    completed: '<span class="px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800">✓ Completed</span>',
+                    cancelled: '<span class="px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">✗ Cancelled</span>'
+                };
+                return badges[status] || badges.pending;
+            };
+
+            document.getElementById("myBookingsList").innerHTML = userBookings.length === 0 
+                ? '<div class="text-center py-12"><p class="text-gray-500">No bookings yet. Start by booking a service!</p></div>'
+                : userBookings.map(b => `
+                    <div class="bg-white rounded-xl shadow p-5 border-l-4 border-indigo-500">
+                        <div class="flex items-start justify-between mb-3">
+                            <div>
+                                <h3 class="font-display font-bold text-lg">${b.provider}</h3>
+                                <p class="text-sm text-gray-600">${b.category} • Booking #${b.id}</p>
+                            </div>
+                            ${statusBadge(b.status)}
+                        </div>
+                        <div class="grid grid-cols-3 gap-4 text-sm mb-4">
+                            <div>
+                                <p class="text-gray-600">Date</p>
+                                <p class="font-semibold">${new Date(b.date).toLocaleDateString()}</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-600">Time</p>
+                                <p class="font-semibold">${b.time}</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-600">Status</p>
+                                <p class="font-semibold capitalize">${b.status}</p>
+                            </div>
+                        </div>
+                        ${b.notes ? `<p class="text-sm text-gray-600 mb-3"><strong>Notes:</strong> ${b.notes}</p>` : ''}
+                        <div class="flex gap-2 pt-3 border-t">
+                            <button onclick="contactProvider('${b.provider}')" class="flex-1 btn-premium btn-primary text-sm">📞 Contact Provider</button>
+                            ${b.status === 'pending' ? `<button onclick="cancelBooking(${b.id})" class="flex-1 px-4 py-2 rounded-lg bg-red-100 text-red-700 font-semibold text-sm hover:bg-red-200">Cancel</button>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+        }
+
+        function contactProvider(name) {
+            showToast(`📞 Calling ${name}...`);
+        }
+
+        function cancelBooking(bookingId) {
+            const booking = bookings.find(b => b.id === bookingId);
+            booking.status = 'cancelled';
+            showToast(`✓ Booking #${bookingId} cancelled`);
+            renderMyBookings();
+        }
+
+        async function sendMobileOTP(context, mobileInputId, otpContainerId) {
+            const mobile = document.getElementById(mobileInputId)?.value;
+            if (!mobile || mobile.length !== 10) {
+                showToast("Enter valid 10-digit mobile number");
+                return false;
+            }
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/send-mobile-otp`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ mobile }),
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById(otpContainerId).style.display = "block";
+                    showToast(`✓ OTP sent! Demo OTP: ${data.demoOtp}`);
+                    return true;
+                } else {
+                    showToast("Failed to send OTP");
+                    return false;
+                }
+            } catch (error) {
+                showToast("Backend not reachable. Demo mode active.");
+                document.getElementById(otpContainerId).style.display = "block";
+                return true;
+            }
+        }
+
+        async function verifyMobileOTP(context, mobileInputId, otpContainerId) {
+            const mobile = document.getElementById(mobileInputId)?.value;
+            const inputs = document.querySelectorAll(`#${otpContainerId} .otp-input`);
+            const otp = Array.from(inputs).map(i => i.value).join("");
+
+            if (otp.length !== 4) {
+                showToast("Enter complete OTP");
+                return false;
+            }
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/verify-mobile-otp`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ mobile, otp }),
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    verifiedMobiles[context] = true;
+                    showToast("✓ Mobile verified!");
+                    return true;
+                }
+            } catch (error) {
+                // Demo mode
+                if (otp === "1234") {
+                    verifiedMobiles[context] = true;
+                    showToast("✓ Mobile verified (Demo)!");
+                    return true;
+                }
+            }
+            showToast("Invalid OTP");
+            return false;
+        }
+
+        async function sendEmailOTP(context, emailInputId, otpContainerId) {
+            const email = document.getElementById(emailInputId)?.value;
+            if (!email || !email.includes("@")) {
+                showToast("Enter valid email");
+                return false;
+            }
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/send-email-otp`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email }),
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    document.getElementById(otpContainerId).style.display = "block";
+                    showToast(`✓ OTP sent! Demo OTP: ${data.demoOtp}`);
+                    return true;
+                }
+            } catch (error) {
+                // Demo mode
+                document.getElementById(otpContainerId).style.display = "block";
+                showToast("✓ OTP sent (Demo mode)!");
+                return true;
+            }
+            return false;
+        }
+
+        async function verifyEmailOTP(context, emailInputId, otpContainerId) {
+            const email = document.getElementById(emailInputId)?.value;
+            const inputs = document.querySelectorAll(`#${otpContainerId} .otp-input`);
+            const otp = Array.from(inputs).map(i => i.value).join("");
+
+            if (otp.length !== 4) {
+                showToast("Enter complete OTP");
+                return false;
+            }
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/verify-email-otp`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, otp }),
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    verifiedEmails[context] = true;
+                    showToast("✓ Email verified!");
+                    return true;
+                }
+            } catch (error) {
+                if (otp === "1234") {
+                    verifiedEmails[context] = true;
+                    showToast("✓ Email verified (Demo)!");
+                    return true;
+                }
+            }
+            showToast("Invalid OTP");
+            return false;
+        }
+
+        function showLoginTab() {
+            document.getElementById("loginTabBtn").classList.add("tab-active");
+            document.getElementById("loginTabBtn").style.borderBottom = "4px solid #dc2626";
+            document.getElementById("signupTabBtn").classList.remove("tab-active");
+            document.getElementById("signupTabBtn").style.borderBottom = "4px solid transparent";
+            document.getElementById("signupTabBtn").classList.add("text-gray-500");
+
+            document.getElementById("authFormContainer").innerHTML = `
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-section">
+                        <div class="form-section-title">Login to Your Account</div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-semibold mb-2 text-gray-700">Mobile Number (10 Digits) *</label>
+                            <input type="tel" id="loginMobile" placeholder="Enter 10-digit mobile number" class="input-field" maxlength="10" required>
+                        </div>
+                        <button type="button" onclick="sendLoginOTP()" class="btn-premium btn-primary w-full font-semibold">SEND OTP</button>
+                    </div>
+                    
+                    <div id="loginOtpContainer" style="display:none;" class="form-section">
+                        <div class="form-section-title">Verify OTP</div>
+                        <p class="text-sm text-gray-600 mb-4">Enter the 4-digit OTP sent to your mobile</p>
+                        <div class="flex justify-between gap-2 mb-6">
+                            <input type="text" maxlength="1" class="otp-input text-center text-2xl font-bold border-2 border-gray-300 p-3" oninput="this.nextElementSibling?.focus()" onkeydown="if(event.key=='Backspace'&&!this.value)this.previousElementSibling?.focus()">
+                            <input type="text" maxlength="1" class="otp-input text-center text-2xl font-bold border-2 border-gray-300 p-3" oninput="this.nextElementSibling?.focus()" onkeydown="if(event.key=='Backspace'&&!this.value)this.previousElementSibling?.focus()">
+                            <input type="text" maxlength="1" class="otp-input text-center text-2xl font-bold border-2 border-gray-300 p-3" oninput="this.nextElementSibling?.focus()" onkeydown="if(event.key=='Backspace'&&!this.value)this.previousElementSibling?.focus()">
+                            <input type="text" maxlength="1" class="otp-input text-center text-2xl font-bold border-2 border-gray-300 p-3" onkeydown="if(event.key=='Backspace'&&!this.value)this.previousElementSibling?.focus()">
+                        </div>
+                        <button type="button" onclick="verifyLoginOTP()" class="btn-premium btn-primary w-full font-semibold">VERIFY & LOGIN</button>
+                    </div>
+                </form>
+            `;
+        }
+
+        async function sendLoginOTP() {
+            const mobile = document.getElementById("loginMobile")?.value;
+            if (!mobile || mobile.length !== 10) {
+                showToast("⚠ Enter valid 10-digit mobile number");
+                return false;
+            }
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/send-mobile-otp`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ mobile }),
+                });
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById("loginOtpContainer").style.display = "block";
+                    showToast(`✓ OTP sent! Demo OTP: ${data.demoOtp}`);
+                    window.pendingLoginMobile = mobile;
+                    return true;
+                }
+            } catch (error) {
+                document.getElementById("loginOtpContainer").style.display = "block";
+                showToast("✓ OTP sent (Demo Mode) - Use: 1234");
+                window.pendingLoginMobile = mobile;
+                return true;
+            }
+        }
+
+        async function verifyLoginOTP() {
+            const mobile = window.pendingLoginMobile;
+            const inputs = document.querySelectorAll("#loginOtpContainer .otp-input");
+            const otp = Array.from(inputs).map(i => i.value).join("");
+
+            if (otp.length !== 4) {
+                showToast("⚠ Enter complete 4-digit OTP");
+                return false;
+            }
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/verify-mobile-otp`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ mobile, otp }),
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    userEmail = `user_${mobile}@hirehub.gov`;
+                    showToast("✓ Login Successful! Welcome to HireHub.");
+                    setTimeout(() => navigateTo("home"), 1000);
+                    return true;
+                }
+            } catch (error) {
+                if (otp === "1234") {
+                    userEmail = `user_${mobile}@hirehub.gov`;
+                    showToast("✓ Login Successful! Welcome to HireHub.");
+                    setTimeout(() => navigateTo("home"), 1000);
+                    return true;
+                }
+            }
+            showToast("⚠ Invalid OTP. Please try again.");
+            return false;
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+        }
+
+        function showSignupTab() {
+            document.getElementById("signupTabBtn").classList.add("tab-active");
+            document.getElementById("signupTabBtn").style.borderBottom = "4px solid #dc2626";
+            document.getElementById("loginTabBtn").classList.remove("tab-active");
+            document.getElementById("loginTabBtn").style.borderBottom = "4px solid transparent";
+            document.getElementById("loginTabBtn").classList.add("text-gray-500");
+
+            document.getElementById("authFormContainer").innerHTML = `
+                <form onsubmit="handleSignup(event)">
+                    <!-- Personal Information -->
+                    <div class="form-section">
+                        <div class="form-section-title">Personal Information</div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-semibold mb-2 text-gray-700">Full Name (As per Government ID) *</label>
+                            <input type="text" id="signupName" placeholder="Enter your full name" class="input-field" required>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block text-sm font-semibold mb-2 text-gray-700">Date of Birth *</label>
+                                <input type="date" id="signupDOB" class="input-field" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2 text-gray-700">Gender *</label>
+                                <select id="signupGender" class="input-field" required>
+                                    <option value="">Select Gender</option>
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div class="form-section">
+                        <div class="form-section-title">Contact Information</div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-semibold mb-2 text-gray-700">Mobile Number (10 Digits) *</label>
+                            <div class="flex gap-2">
+                                <input type="tel" id="signupMobile" placeholder="Enter mobile number" class="input-field flex-1" maxlength="10" required>
+                                <button type="button" onclick="sendSignupMobileOTP()" class="btn-premium btn-primary px-6 font-semibold">SEND</button>
+                            </div>
+                            <div id="signupMobileOtp" style="display:none;" class="mt-3">
+                                <p class="text-xs text-gray-600 mb-2">Enter 4-digit OTP:</p>
+                                <div class="flex justify-between gap-2 mb-3">
+                                    <input type="text" maxlength="1" class="otp-input text-center text-xl font-bold border-2 border-gray-300 p-2" oninput="this.nextElementSibling?.focus()">
+                                    <input type="text" maxlength="1" class="otp-input text-center text-xl font-bold border-2 border-gray-300 p-2" oninput="this.nextElementSibling?.focus()">
+                                    <input type="text" maxlength="1" class="otp-input text-center text-xl font-bold border-2 border-gray-300 p-2" oninput="this.nextElementSibling?.focus()">
+                                    <input type="text" maxlength="1" class="otp-input text-center text-xl font-bold border-2 border-gray-300 p-2">
+                                </div>
+                                <button type="button" onclick="verifySignupMobileOTP()" class="btn-premium btn-secondary w-full text-sm font-semibold">VERIFY</button>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-semibold mb-2 text-gray-700">Email Address *</label>
+                            <div class="flex gap-2">
+                                <input type="email" id="signupEmail" placeholder="Enter email address" class="input-field flex-1" required>
+                                <button type="button" onclick="sendSignupEmailOTP()" class="btn-premium btn-primary px-6 font-semibold">SEND</button>
+                            </div>
+                            <div id="signupEmailOtp" style="display:none;" class="mt-3">
+                                <p class="text-xs text-gray-600 mb-2">Enter 4-digit OTP:</p>
+                                <div class="flex justify-between gap-2 mb-3">
+                                    <input type="text" maxlength="1" class="otp-input text-center text-xl font-bold border-2 border-gray-300 p-2" oninput="this.nextElementSibling?.focus()">
+                                    <input type="text" maxlength="1" class="otp-input text-center text-xl font-bold border-2 border-gray-300 p-2" oninput="this.nextElementSibling?.focus()">
+                                    <input type="text" maxlength="1" class="otp-input text-center text-xl font-bold border-2 border-gray-300 p-2" oninput="this.nextElementSibling?.focus()">
+                                    <input type="text" maxlength="1" class="otp-input text-center text-xl font-bold border-2 border-gray-300 p-2">
+                                </div>
+                                <button type="button" onclick="verifySignupEmailOTP()" class="btn-premium btn-secondary w-full text-sm font-semibold">VERIFY</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Government ID Information -->
+                    <div class="form-section">
+                        <div class="form-section-title">Government Identification</div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-semibold mb-2 text-gray-700">Aadhaar Number (12 Digits) *</label>
+                            <input type="text" id="signupAadhaar" placeholder="XXXX XXXX XXXX" class="input-field" maxlength="12" required pattern="[0-9]{12}">
+                            <p class="text-xs text-gray-500 mt-1">Your Aadhaar will be securely stored and encrypted</p>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-semibold mb-2 text-gray-700">PAN Number (10 Characters) *</label>
+                            <input type="text" id="signupPAN" placeholder="AAAAA0000A" class="input-field" maxlength="10" required>
+                            <p class="text-xs text-gray-500 mt-1">Format: 5 letters, 4 numbers, 1 letter</p>
+                        </div>
+                    </div>
+
+                    <!-- Address Information -->
+                    <div class="form-section">
+                        <div class="form-section-title">Address Information</div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-semibold mb-2 text-gray-700">Full Address *</label>
+                            <textarea id="signupAddress" placeholder="Enter complete address" class="input-field h-20" required></textarea>
+                        </div>
+                        <div class="grid md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block text-sm font-semibold mb-2 text-gray-700">City/District *</label>
+                                <input type="text" id="signupCity" placeholder="City name" class="input-field" required>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold mb-2 text-gray-700">PIN Code (6 Digits) *</label>
+                                <input type="text" id="signupPincode" placeholder="PIN code" class="input-field" maxlength="6" required pattern="[0-9]{6}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Terms & Conditions -->
+                    <div class="form-section">
+                        <div class="form-section-title">Agreement & Acceptance</div>
+                        <div class="checkbox-group">
+                            <label>
+                                <input type="checkbox" id="termsCheckbox" required>
+                                <span>I hereby declare that the information provided above is true and correct. I understand that providing false information may result in legal action under applicable laws.</span>
+                            </label>
+                        </div>
+                        <div class="checkbox-group">
+                            <label>
+                                <input type="checkbox" id="privacyCheckbox" required>
+                                <span>I agree to the Terms of Service and Privacy Policy of HireHub Platform and accept all applicable rules and regulations.</span>
+                            </label>
+                        </div>
+                        <div class="checkbox-group">
+                            <label>
+                                <input type="checkbox" id="dataCheckbox" required>
+                                <span>I consent to my personal and government identification data being securely stored and processed as per data protection guidelines.</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Submit -->
+                    <div class="form-section">
+                        <button type="submit" class="btn-premium btn-primary w-full font-bold text-base py-3">CREATE ACCOUNT</button>
+                    </div>
+                </form>
+            `;
+        }
+
+        async function sendSignupMobileOTP() {
+            const mobile = document.getElementById("signupMobile")?.value;
+            if (!mobile || mobile.length !== 10) {
+                showToast("⚠ Enter valid 10-digit mobile number");
+                return;
+            }
+            try {
+                const response = await fetch(`${BACKEND_URL}/send-mobile-otp`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ mobile }),
+                });
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById("signupMobileOtp").style.display = "block";
+                    showToast(`✓ OTP sent! Demo: ${data.demoOtp}`);
+                }
+            } catch (error) {
+                document.getElementById("signupMobileOtp").style.display = "block";
+                showToast("✓ OTP sent (Demo) - Use: 1234");
+            }
+        }
+
+        async function verifySignupMobileOTP() {
+            const mobile = document.getElementById("signupMobile")?.value;
+            const inputs = document.querySelectorAll("#signupMobileOtp .otp-input");
+            const otp = Array.from(inputs).map(i => i.value).join("");
+
+            if (otp.length !== 4) {
+                showToast("⚠ Enter complete OTP");
+                return;
+            }
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/verify-mobile-otp`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ mobile, otp }),
+                });
+                const data = await response.json();
+                if (data.success) {
+                    verifiedMobiles.signup = true;
+                    showToast("✓ Mobile verified!");
+                }
+            } catch (error) {
+                if (otp === "1234") {
+                    verifiedMobiles.signup = true;
+                    showToast("✓ Mobile verified (Demo)!");
+                } else {
+                    showToast("⚠ Invalid OTP");
+                }
+            }
+        }
+
+        async function sendSignupEmailOTP() {
+            const email = document.getElementById("signupEmail")?.value;
+            if (!email || !email.includes("@")) {
+                showToast("⚠ Enter valid email address");
+                return;
+            }
+            try {
+                const response = await fetch(`${BACKEND_URL}/send-email-otp`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email }),
+                });
+                const data = await response.json();
+                if (data.success) {
+                    document.getElementById("signupEmailOtp").style.display = "block";
+                    showToast(`✓ OTP sent! Demo: ${data.demoOtp}`);
+                }
+            } catch (error) {
+                document.getElementById("signupEmailOtp").style.display = "block";
+                showToast("✓ OTP sent (Demo) - Use: 1234");
+            }
+        }
+
+        async function verifySignupEmailOTP() {
+            const email = document.getElementById("signupEmail")?.value;
+            const inputs = document.querySelectorAll("#signupEmailOtp .otp-input");
+            const otp = Array.from(inputs).map(i => i.value).join("");
+
+            if (otp.length !== 4) {
+                showToast("⚠ Enter complete OTP");
+                return;
+            }
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/verify-email-otp`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, otp }),
+                });
+                const data = await response.json();
+                if (data.success) {
+                    verifiedEmails.signup = true;
+                    showToast("✓ Email verified!");
+                }
+            } catch (error) {
+                if (otp === "1234") {
+                    verifiedEmails.signup = true;
+                    showToast("✓ Email verified (Demo)!");
+                } else {
+                    showToast("⚠ Invalid OTP");
+                }
+            }
+        }
+
+        function handleSignup(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById("signupName")?.value;
+            const dob = document.getElementById("signupDOB")?.value;
+            const gender = document.getElementById("signupGender")?.value;
+            const mobile = document.getElementById("signupMobile")?.value;
+            const email = document.getElementById("signupEmail")?.value;
+            const aadhaar = document.getElementById("signupAadhaar")?.value;
+            const pan = document.getElementById("signupPAN")?.value;
+            const address = document.getElementById("signupAddress")?.value;
+            const city = document.getElementById("signupCity")?.value;
+            const pincode = document.getElementById("signupPincode")?.value;
+
+            if (!verifiedMobiles.signup) {
+                showToast("⚠ Please verify mobile first");
+                return;
+            }
+
+            if (!verifiedEmails.signup) {
+                showToast("⚠ Please verify email first");
+                return;
+            }
+
+            if (!document.getElementById("termsCheckbox")?.checked || 
+                !document.getElementById("privacyCheckbox")?.checked ||
+                !document.getElementById("dataCheckbox")?.checked) {
+                showToast("⚠ Please accept all terms and conditions");
+                return;
+            }
+
+            // Store user data in MongoDB via API
+            const userData = {
+                name, dob, gender, mobile, email, aadhaar, pan, address, city, pincode,
+                createdAt: new Date().toISOString()
+            };
+
+            fetch(`${BACKEND_URL}/users/register`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(userData)
+            }).catch(() => {
+                console.log("Demo mode - data not persisted to MongoDB");
+            });
+
+            userEmail = email;
+            showToast("✓ Account Created Successfully! Welcome to HireHub.");
+            verifiedMobiles = {};
+            verifiedEmails = {};
+            setTimeout(() => navigateTo("home"), 1500);
+        }
+
+        function showPartnerForm() {
+            document.getElementById("partnerFormContainer").innerHTML = `
+                <div>
+                    <h3 class="font-display text-xl font-bold mb-4">Join as Service Provider</h3>
+                    <div class="mb-3">
+                        <input type="text" id="partnerName" placeholder="Full Name" class="input-field">
+                    </div>
+                    <div class="mb-3">
+                        <select id="partnerCategory" class="input-field">
+                            <option value="">Select Category</option>
+                            <option>Plumber</option>
+                            <option>Electrician</option>
+                            <option>Carpenter</option>
+                            <option>Painter</option>
+                            <option>Mechanic</option>
+                            <option>Driver</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <div class="flex gap-2">
+                            <input type="tel" id="partnerMobile" placeholder="Mobile" class="input-field flex-1" maxlength="10">
+                            <button onclick="sendMobileOTP('partner', 'partnerMobile', 'partnerMobileOtp')" class="btn-premium btn-primary px-6">Send</button>
+                        </div>
+                        <div id="partnerMobileOtp" style="display:none;" class="mt-3">
+                            <div class="flex justify-center gap-2 mb-3">
+                                <input type="text" maxlength="1" class="otp-input" oninput="this.nextElementSibling?.focus()">
+                                <input type="text" maxlength="1" class="otp-input" oninput="this.nextElementSibling?.focus()">
+                                <input type="text" maxlength="1" class="otp-input" oninput="this.nextElementSibling?.focus()">
+                                <input type="text" maxlength="1" class="otp-input">
+                            </div>
+                            <button onclick="verifyMobileOTP('partner', 'partnerMobile', 'partnerMobileOtp')" class="btn-premium btn-secondary w-full text-sm">Verify</button>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="flex gap-2">
+                            <input type="email" id="partnerEmail" placeholder="Email" class="input-field flex-1">
+                            <button onclick="sendEmailOTP('partner', 'partnerEmail', 'partnerEmailOtp')" class="btn-premium btn-primary px-6">Send</button>
+                        </div>
+                        <div id="partnerEmailOtp" style="display:none;" class="mt-3">
+                            <div class="flex justify-center gap-2 mb-3">
+                                <input type="text" maxlength="1" class="otp-input" oninput="this.nextElementSibling?.focus()">
+                                <input type="text" maxlength="1" class="otp-input" oninput="this.nextElementSibling?.focus()">
+                                <input type="text" maxlength="1" class="otp-input" oninput="this.nextElementSibling?.focus()">
+                                <input type="text" maxlength="1" class="otp-input">
+                            </div>
+                            <button onclick="verifyEmailOTP('partner', 'partnerEmail', 'partnerEmailOtp')" class="btn-premium btn-secondary w-full text-sm">Verify</button>
+                        </div>
+                    </div>
+                    <button onclick="handlePartnerRegister()" class="btn-premium btn-secondary w-full">Register as Partner</button>
+                </div>
+            `;
+        }
+
+        function handlePartnerRegister() {
+            if (!verifiedMobiles.partner || !verifiedEmails.partner) {
+                showToast("Please verify phone and email first");
+                return;
+            }
+            
+            const name = document.getElementById("partnerName")?.value;
+            const email = document.getElementById("partnerEmail")?.value;
+            const category = document.getElementById("partnerCategory")?.value;
+
+            const provider = {
+                id: businesses.length + 1,
+                name: name,
+                person: name,
+                category: category,
+                email: email,
+                rating: 4.5,
+                reviews: 0,
+                address: "New Provider",
+                price: "₹500+",
+                open: true,
+                tags: ["New"],
+                desc: "Professional service provider"
+            };
+
+            providers.push(provider);
+            showToast("✓ Partner registration submitted! 🎉");
+            setTimeout(() => navigateTo("home"), 1500);
+        }
+
+        // Admin Dashboard Functions
+        function renderAdminDashboard() {
+            const stats = {
+                totalProviders: providers.length,
+                totalBookings: bookings.length,
+                confirmedBookings: bookings.filter(b => b.status === "confirmed").length,
+                pendingReview: bookings.filter(b => b.status === "pending").length
+            };
+
+            document.getElementById("adminTotalProviders").textContent = stats.totalProviders;
+            document.getElementById("adminTotalBookings").textContent = stats.totalBookings;
+            document.getElementById("adminConfirmedBookings").textContent = stats.confirmedBookings;
+            document.getElementById("adminPendingReview").textContent = stats.pendingReview;
+
+            // Recent Providers
+            const recentProviders = providers.slice(-5);
+            document.getElementById("adminProvidersList").innerHTML = recentProviders.length === 0
+                ? '<p class="text-gray-500">No providers yet</p>'
+                : recentProviders.map(p => `
+                    <div class="flex items-center justify-between p-3 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-lg">
+                        <div>
+                            <p class="font-semibold text-gray-900">${p.person}</p>
+                            <p class="text-xs text-gray-600">${p.category}</p>
+                        </div>
+                        <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">Active</span>
+                    </div>
+                `).join('');
+
+            // Recent Bookings
+            const recentBookings = bookings.slice(-5);
+            document.getElementById("adminBookingsList").innerHTML = recentBookings.length === 0
+                ? '<p class="text-gray-500">No bookings yet</p>'
+                : recentBookings.map(b => `
+                    <div class="flex items-center justify-between p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg">
+                        <div>
+                            <p class="font-semibold text-gray-900">#${b.id}</p>
+                            <p class="text-xs text-gray-600">${b.provider}</p>
+                        </div>
+                        <span class="text-xs px-2 py-1 rounded ${b.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}">${b.status}</span>
+                    </div>
+                `).join('');
+
+            // Bookings Table
+            renderAdminBookingsTable();
+        }
+
+        function renderAdminBookingsTable() {
+            const table = document.getElementById("adminBookingsTable");
+            table.innerHTML = bookings.map(b => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-3">#${b.id}</td>
+                    <td class="px-4 py-3 font-semibold">${b.provider}</td>
+                    <td class="px-4 py-3">${b.customer}</td>
+                    <td class="px-4 py-3">${new Date(b.date).toLocaleDateString()} ${b.time}</td>
+                    <td class="px-4 py-3">
+                        <select class="text-xs px-2 py-1 rounded border" onchange="updateBookingStatus(${b.id}, this.value)">
+                            <option value="pending" ${b.status === 'pending' ? 'selected' : ''}>Pending</option>
+                            <option value="confirmed" ${b.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
+                            <option value="completed" ${b.status === 'completed' ? 'selected' : ''}>Completed</option>
+                            <option value="cancelled" ${b.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                        </select>
+                    </td>
+                    <td class="px-4 py-3">
+                        <button onclick="deleteBooking(${b.id})" class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded hover:bg-red-200">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateBookingStatus(bookingId, newStatus) {
+            const booking = bookings.find(b => b.id === bookingId);
+            booking.status = newStatus;
+            showToast(`✓ Booking #${bookingId} updated to ${newStatus}`);
+            renderAdminBookingsTable();
+            renderAdminDashboard();
+        }
+
+        function deleteBooking(bookingId) {
+            bookings = bookings.filter(b => b.id !== bookingId);
+            showToast(`✓ Booking #${bookingId} deleted`);
+            renderAdminBookingsTable();
+            renderAdminDashboard();
+        }
+
+        // Initialize
+        renderCategories();
+        renderFeatured();
+        lucide.createIcons();
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9e97074dd1f39148',t:'MTc3NTcxMTY2OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

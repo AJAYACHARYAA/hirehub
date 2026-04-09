@@ -1,0 +1,2669 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HIREHUB - Government Registered Service Platform</title>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "DM Sans", sans-serif;
+        background: #f0f2f5;
+      }
+      .font-display {
+        font-family: "Outfit", sans-serif;
+      }
+
+      /* Government Style Header */
+      .gov-header {
+        background: linear-gradient(135deg, #0f2b3d 0%, #1a4a6f 100%);
+        border-bottom: 4px solid #ffd700;
+      }
+
+      /* Professional Card Style */
+      .gov-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e5e7eb;
+        transition: all 0.3s ease;
+      }
+
+      .gov-card:hover {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        transform: translateY(-2px);
+      }
+
+      /* Form Styles */
+      .form-input {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.2s;
+      }
+
+      .form-input:focus {
+        outline: none;
+        border-color: #1a4a6f;
+        box-shadow: 0 0 0 3px rgba(26, 74, 111, 0.1);
+      }
+
+      /* OTP Input */
+      .otp-input {
+        width: 70px;
+        height: 70px;
+        text-align: center;
+        font-size: 28px;
+        font-weight: 700;
+        border: 2px solid #d1d5db;
+        border-radius: 12px;
+        margin: 0 6px;
+        background: white;
+      }
+
+      .otp-input:focus {
+        border-color: #1a4a6f;
+        box-shadow: 0 0 0 3px rgba(26, 74, 111, 0.1);
+        outline: none;
+      }
+
+      /* Document Upload Area */
+      .upload-area {
+        border: 2px dashed #d1d5db;
+        border-radius: 12px;
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s;
+        background: #fafafa;
+      }
+
+      .upload-area:hover {
+        border-color: #1a4a6f;
+        background: #f0f9ff;
+      }
+
+      /* Admin Dashboard Cards */
+      .admin-stat-card {
+        background: linear-gradient(135deg, #1a4a6f 0%, #0f2b3d 100%);
+        border-radius: 12px;
+        padding: 20px;
+        color: white;
+      }
+
+      /* Verification Badge */
+      .verified-badge {
+        background: #10b981;
+        color: white;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      /* Table Styles */
+      .admin-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .admin-table th,
+      .admin-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #e5e7eb;
+      }
+
+      .admin-table th {
+        background: #f8f9fa;
+        font-weight: 600;
+        color: #374151;
+      }
+
+      /* Button Styles */
+      .btn-primary {
+        background: #1a4a6f;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.2s;
+      }
+
+      .btn-primary:hover {
+        background: #0f2b3d;
+        transform: translateY(-1px);
+      }
+
+      .btn-danger {
+        background: #dc2626;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-size: 13px;
+      }
+
+      /* Toast */
+      .toast {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #1f2937;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 50px;
+        z-index: 1000;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      /* Modal */
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1100;
+      }
+
+      .modal-content {
+        background: white;
+        border-radius: 16px;
+        max-width: 500px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+
+      /* Animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .animate-fade-in {
+        animation: fadeIn 0.4s ease forwards;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <!-- Government Style Header -->
+      <header class="gov-header fixed top-0 left-0 w-full z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+          <div class="flex items-center justify-between">
+            <div
+              class="flex items-center gap-3 cursor-pointer"
+              onclick="navigateTo('home')"
+            >
+              <div
+                class="w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center"
+              >
+                <span class="text-blue-900 font-bold text-xl">H</span>
+              </div>
+              <div>
+                <span class="font-display font-bold text-white text-xl"
+                  >HIREHUB</span
+                >
+                <p class="text-yellow-400 text-xs">Government Registered</p>
+              </div>
+            </div>
+
+            <div class="hidden md:flex items-center gap-6">
+              <button
+                onclick="navigateTo('home')"
+                class="text-white/90 hover:text-yellow-400 transition"
+              >
+                Home
+              </button>
+              <button
+                onclick="navigateTo('providers')"
+                class="text-white/90 hover:text-yellow-400 transition"
+              >
+                Service Providers
+              </button>
+              <button
+                id="adminButton"
+                onclick="showAdminPanel()"
+                class="text-white/90 hover:text-yellow-400 transition"
+                style="display: none"
+              >
+                Admin Portal
+              </button>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <div id="userInfo" class="hidden text-white text-sm">
+                <span id="userName"></span>
+                <button
+                  onclick="logout()"
+                  class="ml-3 text-yellow-400 hover:text-yellow-300"
+                >
+                  Logout
+                </button>
+              </div>
+              <button
+                onclick="navigateTo('auth')"
+                id="loginBtn"
+                class="bg-yellow-400 text-blue-900 px-5 py-2 rounded-lg font-semibold hover:bg-yellow-300 transition"
+              >
+                Register / Login
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <div class="pt-20">
+        <!-- Home Page -->
+        <div id="homePage" class="page">
+          <!-- Hero Section -->
+          <div
+            class="bg-gradient-to-r from-blue-900 to-blue-800 text-white py-16"
+          >
+            <div class="max-w-6xl mx-auto text-center px-4">
+              <h1 class="font-display text-5xl font-bold mb-4">
+                Government Registered<br />Service Professionals
+              </h1>
+              <p class="text-xl mb-8">
+                Verified & Trusted Service Providers with Legal Documentation
+              </p>
+              <div
+                class="max-w-2xl mx-auto bg-white rounded-full p-2 flex gap-2"
+              >
+                <input
+                  type="text"
+                  id="homeSearch"
+                  placeholder="Search for verified professionals..."
+                  class="flex-1 px-4 py-3 text-gray-800 rounded-full outline-none"
+                />
+                <button
+                  onclick="searchServices()"
+                  class="bg-blue-900 text-white px-6 py-2 rounded-full hover:bg-blue-800"
+                >
+                  Search
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Categories -->
+          <div class="max-w-7xl mx-auto px-4 py-12">
+            <h2 class="font-display text-2xl font-bold text-center mb-8">
+              Verified Service Categories
+            </h2>
+            <div
+              class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4"
+              id="categoriesGrid"
+            ></div>
+          </div>
+
+          <!-- Subcategories -->
+          <div
+            class="max-w-7xl mx-auto px-4 py-8 hidden"
+            id="subcategoriesSection"
+          >
+            <div class="flex items-center mb-6">
+              <button onclick="hideSubcategories()" class="text-blue-600 mr-4">
+                <i data-lucide="arrow-left" class="w-5 h-5"></i> Back
+              </button>
+              <h2
+                class="font-display text-2xl font-bold"
+                id="subcategoriesTitle"
+              ></h2>
+            </div>
+            <div
+              class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4"
+              id="subcategoriesGrid"
+            ></div>
+          </div>
+
+          <!-- Featured Providers -->
+          <div class="bg-gray-50 py-12">
+            <div class="max-w-7xl mx-auto px-4">
+              <h2 class="font-display text-2xl font-bold mb-8">
+                Government Verified Providers
+              </h2>
+              <div
+                class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                id="featuredProviders"
+              ></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Providers Page -->
+        <div id="providersPage" class="page hidden">
+          <div class="max-w-7xl mx-auto px-4 py-8">
+            <h1 class="font-display text-3xl font-bold mb-6">
+              Verified Service Providers
+            </h1>
+            <div
+              class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+              id="providersGrid"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Auth Page -->
+        <div id="authPage" class="page hidden">
+          <div class="max-w-md mx-auto px-4 py-8">
+            <div class="gov-card p-8">
+              <div class="mb-5">
+                <p class="font-semibold text-sm mb-2">Continue as</p>
+                <div class="flex gap-2">
+                  <button
+                    id="authUserButton"
+                    onclick="selectAuthType('user')"
+                    class="flex-1 border border-blue-900 text-blue-900 rounded-lg py-3 font-semibold"
+                  >
+                    User
+                  </button>
+                  <button
+                    id="authProviderButton"
+                    onclick="selectAuthType('provider')"
+                    class="flex-1 bg-blue-900 text-white rounded-lg py-3 font-semibold"
+                  >
+                    Provider
+                  </button>
+                </div>
+              </div>
+              <div class="flex gap-4 mb-6 border-b">
+                <button
+                  onclick="showLogin()"
+                  id="loginTab"
+                  class="pb-3 px-4 font-semibold text-blue-900 border-b-2 border-blue-900"
+                >
+                  Login
+                </button>
+                <button
+                  onclick="showRegister()"
+                  id="registerTab"
+                  class="pb-3 px-4 font-semibold text-gray-500"
+                >
+                  Partner Application
+                </button>
+              </div>
+
+              <!-- Login Form -->
+              <div id="loginForm">
+                <div class="mb-4">
+                  <label class="block text-sm font-semibold mb-2"
+                    >Registered Mobile Number</label
+                  >
+                  <input
+                    type="tel"
+                    id="loginMobile"
+                    placeholder="9876543210"
+                    class="form-input"
+                  />
+                </div>
+                <button onclick="sendOTP()" class="btn-primary w-full">
+                  Send OTP
+                </button>
+
+                <div id="otpSection" class="hidden mt-4">
+                  <p class="text-sm text-gray-600 mb-3">Enter 4-digit OTP</p>
+                  <div class="flex justify-center gap-2 mb-4">
+                    <input
+                      type="text"
+                      maxlength="1"
+                      class="otp-input"
+                      oninput="moveNext(this, 0)"
+                      onkeydown="moveBack(event, this, 0)"
+                    />
+                    <input
+                      type="text"
+                      maxlength="1"
+                      class="otp-input"
+                      oninput="moveNext(this, 1)"
+                      onkeydown="moveBack(event, this, 1)"
+                    />
+                    <input
+                      type="text"
+                      maxlength="1"
+                      class="otp-input"
+                      oninput="moveNext(this, 2)"
+                      onkeydown="moveBack(event, this, 2)"
+                    />
+                    <input
+                      type="text"
+                      maxlength="1"
+                      class="otp-input"
+                      oninput="moveNext(this, 3)"
+                      onkeydown="moveBack(event, this, 3)"
+                    />
+                  </div>
+                  <button
+                    onclick="verifyOTP()"
+                    class="bg-green-600 text-white w-full py-3 rounded-lg font-semibold"
+                  >
+                    Verify & Login
+                  </button>
+                </div>
+              </div>
+
+              <!-- Registration Form -->
+              <div id="registerForm" class="hidden">
+                <div class="mb-3">
+                  <label class="block text-sm font-semibold mb-2"
+                    >Full Name (as per ID)</label
+                  >
+                  <input
+                    type="text"
+                    id="regName"
+                    class="form-input"
+                    placeholder="Enter your full name"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="block text-sm font-semibold mb-2"
+                    >Mobile Number</label
+                  >
+                  <input
+                    type="tel"
+                    id="regMobile"
+                    class="form-input"
+                    placeholder="10-digit mobile number"
+                  />
+                  <button
+                    onclick="sendRegistrationOTP()"
+                    class="mt-2 text-sm text-blue-600"
+                  >
+                    Send OTP
+                  </button>
+                  <div id="regOtpSection" class="hidden mt-2">
+                    <div class="flex gap-2 mb-2">
+                      <input
+                        type="text"
+                        maxlength="1"
+                        class="otp-input-sm"
+                        oninput="moveNextReg(this, 0)"
+                      />
+                      <input
+                        type="text"
+                        maxlength="1"
+                        class="otp-input-sm"
+                        oninput="moveNextReg(this, 1)"
+                      />
+                      <input
+                        type="text"
+                        maxlength="1"
+                        class="otp-input-sm"
+                        oninput="moveNextReg(this, 2)"
+                      />
+                      <input
+                        type="text"
+                        maxlength="1"
+                        class="otp-input-sm"
+                        oninput="moveNextReg(this, 3)"
+                      />
+                    </div>
+                    <button
+                      onclick="verifyRegistrationOTP()"
+                      class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm"
+                    >
+                      Verify OTP
+                    </button>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label class="block text-sm font-semibold mb-2"
+                    >Email Address</label
+                  >
+                  <input
+                    type="email"
+                    id="regEmail"
+                    class="form-input"
+                    placeholder="your@email.com"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="block text-sm font-semibold mb-2"
+                    >Aadhaar Number</label
+                  >
+                  <input
+                    type="text"
+                    id="regAadhaar"
+                    class="form-input"
+                    placeholder="XXXX-XXXX-XXXX"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="block text-sm font-semibold mb-2"
+                    >PAN Card Number</label
+                  >
+                  <input
+                    type="text"
+                    id="regPan"
+                    class="form-input"
+                    placeholder="ABCDE1234F"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label class="block text-sm font-semibold mb-2"
+                    >Upload Aadhaar Card</label
+                  >
+                  <div
+                    class="upload-area"
+                    onclick="document.getElementById('aadhaarUpload').click()"
+                  >
+                    <i
+                      data-lucide="upload"
+                      class="w-8 h-8 mx-auto mb-2 text-gray-400"
+                    ></i>
+                    <p class="text-sm text-gray-500">
+                      Click to upload Aadhaar Card
+                    </p>
+                    <p class="text-xs text-gray-400">
+                      JPG, PNG or PDF (Max 5MB)
+                    </p>
+                  </div>
+                  <input
+                    type="file"
+                    id="aadhaarUpload"
+                    class="hidden"
+                    accept="image/*,.pdf"
+                  />
+                  <div id="aadhaarStatus" class="text-sm mt-1"></div>
+                </div>
+                <div class="mb-3">
+                  <label class="block text-sm font-semibold mb-2"
+                    >Upload PAN Card</label
+                  >
+                  <div
+                    class="upload-area"
+                    onclick="document.getElementById('panUpload').click()"
+                  >
+                    <i
+                      data-lucide="upload"
+                      class="w-8 h-8 mx-auto mb-2 text-gray-400"
+                    ></i>
+                    <p class="text-sm text-gray-500">
+                      Click to upload PAN Card
+                    </p>
+                    <p class="text-xs text-gray-400">
+                      JPG, PNG or PDF (Max 5MB)
+                    </p>
+                  </div>
+                  <input
+                    type="file"
+                    id="panUpload"
+                    class="hidden"
+                    accept="image/*,.pdf"
+                  />
+                  <div id="panStatus" class="text-sm mt-1"></div>
+                </div>
+                <div class="mb-3">
+                  <label class="block text-sm font-semibold mb-2"
+                    >Select Service Category</label
+                  >
+                  <select id="regCategory" class="form-input">
+                    <option value="">Select your profession</option>
+                    <option value="Carpenter">Carpenter</option>
+                    <option value="Electrician">Electrician</option>
+                    <option value="Plumber">Plumber</option>
+                    <option value="Painter">Painter</option>
+                    <option value="Mechanic">Mechanic</option>
+                    <option value="Driver">Driver</option>
+                    <option value="Tutor">Tutor</option>
+                    <option value="Chef">Chef</option>
+                    <option value="Maid">Maid</option>
+                    <option value="Labour">Labour</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label class="block text-sm font-semibold mb-2">
+                    Business Location / City
+                  </label>
+                  <div class="flex gap-2">
+                    <input
+                      type="text"
+                      id="regLocation"
+                      class="form-input flex-1"
+                      placeholder="City or current area"
+                    />
+                    <button
+                      type="button"
+                      onclick="autoFillProviderLocation()"
+                      class="bg-blue-900 text-white px-4 py-2 rounded-lg text-sm"
+                    >
+                      Auto
+                    </button>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label class="block text-sm font-semibold mb-2"
+                    >Years of Experience</label
+                  >
+                  <input
+                    type="text"
+                    id="regExperience"
+                    class="form-input"
+                    placeholder="e.g., 5 years"
+                  />
+                </div>
+                <div class="mb-4">
+                  <label class="flex items-center gap-2">
+                    <input type="checkbox" id="regTerms" class="rounded" />
+                    <span class="text-sm text-gray-600"
+                      >I confirm that all provided documents are authentic and I
+                      agree to the partner terms</span
+                    >
+                  </label>
+                </div>
+                <button
+                  onclick="completeRegistration()"
+                  class="btn-primary w-full"
+                >
+                  Submit Registration
+                </button>
+                <p class="text-xs text-gray-500 mt-4 text-center">
+                  Partner applications are reviewed by our admin team. You'll be
+                  notified once approved.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Admin Panel -->
+        <div id="adminPage" class="page hidden">
+          <div class="max-w-7xl mx-auto px-4 py-8">
+            <div class="flex justify-between items-center mb-6">
+              <h1 class="font-display text-3xl font-bold">
+                Government Admin Dashboard
+              </h1>
+              <button onclick="navigateTo('home')" class="text-blue-600">
+                ← Back to Portal
+              </button>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+              <div class="admin-stat-card">
+                <i data-lucide="users" class="w-8 h-8 mb-2"></i>
+                <h3 class="text-2xl font-bold" id="totalUsers">0</h3>
+                <p>Total Registered Users</p>
+              </div>
+              <div
+                class="admin-stat-card"
+                style="background: linear-gradient(135deg, #0f766e, #0d9488)"
+              >
+                <i data-lucide="briefcase" class="w-8 h-8 mb-2"></i>
+                <h3 class="text-2xl font-bold" id="totalProviders">0</h3>
+                <p>Verified Providers</p>
+              </div>
+              <div
+                class="admin-stat-card"
+                style="background: linear-gradient(135deg, #b45309, #d97706)"
+              >
+                <i data-lucide="file-check" class="w-8 h-8 mb-2"></i>
+                <h3 class="text-2xl font-bold" id="pendingVerification">0</h3>
+                <p>Pending Verification</p>
+              </div>
+              <div
+                class="admin-stat-card"
+                style="background: linear-gradient(135deg, #1e40af, #1d4ed8)"
+              >
+                <i data-lucide="calendar" class="w-8 h-8 mb-2"></i>
+                <h3 class="text-2xl font-bold" id="totalBookings">0</h3>
+                <p>Total Bookings</p>
+              </div>
+            </div>
+
+            <!-- Users Table -->
+            <div class="gov-card overflow-hidden">
+              <div class="px-6 py-4 bg-gray-50 border-b">
+                <h2 class="font-semibold text-lg">
+                  Registered Users & Service Providers
+                </h2>
+              </div>
+              <div class="overflow-x-auto">
+                <table class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Name</th>
+                      <th>Mobile</th>
+                      <th>Email</th>
+                      <th>Aadhaar</th>
+                      <th>PAN</th>
+                      <th>Category</th>
+                      <th>Status</th>
+                      <th>Application</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="adminUsersList"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- User Profile Page -->
+        <div id="profilePage" class="page hidden">
+          <div class="max-w-4xl mx-auto px-4 py-8">
+            <div class="flex justify-between items-center mb-6">
+              <h1 class="font-display text-3xl font-bold">My Profile</h1>
+              <button onclick="navigateTo('home')" class="text-blue-600">
+                ← Back
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <!-- Profile Card -->
+              <div class="gov-card p-6">
+                <div class="text-center mb-4">
+                  <div
+                    class="w-20 h-20 bg-blue-900 text-white rounded-full mx-auto flex items-center justify-center text-2xl font-bold mb-2"
+                  >
+                    <span id="profileInitial">U</span>
+                  </div>
+                  <h2 id="profileName" class="text-xl font-bold">Loading...</h2>
+                  <p id="profileMobile" class="text-gray-600"></p>
+                </div>
+                <div class="border-t pt-4">
+                  <p class="text-sm text-gray-600 mb-1">Email</p>
+                  <p id="profileEmail" class="font-semibold mb-3"></p>
+                  <p class="text-sm text-gray-600 mb-1">Mobile</p>
+                  <p id="profilePhoneEdit" class="font-semibold"></p>
+                </div>
+              </div>
+
+              <!-- Stats & Actions -->
+              <div class="md:col-span-2 space-y-6">
+                <div class="grid grid-cols-2 gap-4">
+                  <div class="gov-card p-6 text-center">
+                    <div
+                      class="text-3xl font-bold text-blue-900 mb-1"
+                      id="statsBookings"
+                    >
+                      0
+                    </div>
+                    <p class="text-gray-600">Total Bookings</p>
+                  </div>
+                  <div class="gov-card p-6 text-center">
+                    <div
+                      class="text-3xl font-bold text-blue-900 mb-1"
+                      id="statsReviews"
+                    >
+                      0
+                    </div>
+                    <p class="text-gray-600">Reviews Written</p>
+                  </div>
+                </div>
+
+                <div class="gov-card p-6">
+                  <h3 class="font-semibold mb-4">Quick Actions</h3>
+                  <div class="space-y-2">
+                    <button
+                      onclick="navigateTo('bookings')"
+                      class="btn-primary w-full"
+                    >
+                      <i data-lucide="calendar" class="w-4 h-4 inline mr-2"></i>
+                      My Bookings
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bookings Page -->
+        <div id="bookingsPage" class="page hidden">
+          <div class="max-w-6xl mx-auto px-4 py-8">
+            <div class="flex justify-between items-center mb-6">
+              <h1 class="font-display text-3xl font-bold">My Bookings</h1>
+              <button onclick="navigateTo('home')" class="text-blue-600">
+                ← Back
+              </button>
+            </div>
+
+            <div class="mb-4 flex gap-2">
+              <button
+                onclick="filterBookings('all')"
+                class="px-4 py-2 rounded-lg font-semibold bg-blue-900 text-white"
+              >
+                All
+              </button>
+              <button
+                onclick="filterBookings('pending')"
+                class="px-4 py-2 rounded-lg font-semibold border border-gray-300"
+              >
+                Pending
+              </button>
+              <button
+                onclick="filterBookings('confirmed')"
+                class="px-4 py-2 rounded-lg font-semibold border border-gray-300"
+              >
+                Confirmed
+              </button>
+              <button
+                onclick="filterBookings('completed')"
+                class="px-4 py-2 rounded-lg font-semibold border border-gray-300"
+              >
+                Completed
+              </button>
+            </div>
+
+            <div id="bookingsList" class="space-y-4"></div>
+          </div>
+        </div>
+
+        <!-- Booking Details Modal -->
+        <div id="bookingDetailModal" class="modal hidden">
+          <div class="modal-content p-6" id="bookingDetailContent"></div>
+        </div>
+
+        <!-- Provider Dashboard -->
+        <div id="providerPage" class="page hidden">
+          <div class="max-w-7xl mx-auto px-4 py-8">
+            <div class="flex justify-between items-center mb-6">
+              <h1 class="font-display text-3xl font-bold">
+                Provider Dashboard
+              </h1>
+              <button onclick="navigateTo('home')" class="text-blue-600">
+                ← Back
+              </button>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+              <div class="gov-card p-6 text-center">
+                <div
+                  class="text-3xl font-bold text-blue-900 mb-1"
+                  id="providerBookings"
+                >
+                  0
+                </div>
+                <p>Total Bookings</p>
+              </div>
+              <div class="gov-card p-6 text-center">
+                <div
+                  class="text-3xl font-bold text-green-600 mb-1"
+                  id="providerCompleted"
+                >
+                  0
+                </div>
+                <p>Completed</p>
+              </div>
+              <div class="gov-card p-6 text-center">
+                <div
+                  class="text-3xl font-bold text-yellow-600 mb-1"
+                  id="providerRating"
+                >
+                  0
+                </div>
+                <p>Avg Rating</p>
+              </div>
+              <div class="gov-card p-6 text-center">
+                <div
+                  class="text-3xl font-bold text-purple-600 mb-1"
+                  id="providerReviews"
+                >
+                  0
+                </div>
+                <p>Total Reviews</p>
+              </div>
+            </div>
+
+            <!-- Recent Bookings -->
+            <div class="gov-card p-6 mb-8">
+              <h2 class="font-semibold text-lg mb-4">Recent Bookings</h2>
+              <div id="providerBookingsList" class="space-y-2"></div>
+            </div>
+
+            <!-- Business Management -->
+            <div class="gov-card p-6">
+              <h2 class="font-semibold text-lg mb-4">My Business Info</h2>
+              <div id="providerBusinessInfo"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Review Modal -->
+        <div id="reviewModal" class="modal hidden">
+          <div class="modal-content p-6 max-w-md">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="font-display text-xl font-bold">Leave a Review</h2>
+              <button
+                onclick="closeReviewModal()"
+                class="text-gray-500 hover:text-gray-700"
+              >
+                &times;
+              </button>
+            </div>
+            <div id="reviewContent"></div>
+          </div>
+        </div>
+
+        <!-- Provider Detail Modal -->
+        <div id="providerModal" class="modal hidden">
+          <div class="modal-content p-6" id="providerModalContent"></div>
+        </div>
+      </div>
+
+      <!-- Toast -->
+      <div id="toast" class="toast hidden"></div>
+    </div>
+
+    <style>
+      .otp-input-sm {
+        width: 55px;
+        height: 55px;
+        text-align: center;
+        font-size: 22px;
+        font-weight: 700;
+        border: 2px solid #d1d5db;
+        border-radius: 8px;
+        margin: 0 4px;
+      }
+
+      .provider-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+        transition: all 0.3s;
+      }
+
+      .provider-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+      }
+
+      .verified-icon {
+        background: #10b981;
+        border-radius: 20px;
+        padding: 4px 8px;
+        font-size: 11px;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+      }
+    </style>
+
+    <script>
+      // Backend URL
+      const BACKEND_URL = "http://localhost:5000";
+
+      // Data Storage
+      let users = JSON.parse(localStorage.getItem("gov_users")) || [];
+      let providers = [];
+      let categories = [];
+      let currentUser =
+        JSON.parse(localStorage.getItem("gov_currentUser")) || null;
+      let otpStore = {};
+      let authType = "user"; // user or provider
+
+      // Fetch providers from backend
+      async function fetchProviders() {
+        try {
+          const response = await fetch(`${BACKEND_URL}/api/users`);
+          const data = await response.json();
+          if (data.success) {
+            // Only show approved partners as providers
+            const approvedPartners = data.data.filter(
+              (u) => u.role === "partner" && u.applicationStatus === "approved",
+            );
+            providers = approvedPartners.map((partner) => ({
+              id: partner._id,
+              name: partner.name,
+              category: partner.category,
+              experience:
+                partner.documents?.experience || "Verified Professional",
+              rating: 0, // Will be calculated from reviews
+              reviews: 0,
+              phone: partner.mobile,
+              email: partner.email,
+              location: partner.location || "To be updated",
+              lat: partner.lat || null,
+              lng: partner.lng || null,
+              price: "Contact for pricing",
+              aadhaar: partner.documents?.aadhaar || "XXXX-XXXX-XXXX",
+              pan: partner.documents?.pan || "XXXXX0000X",
+              verified: true,
+              bio: `${partner.category} service provider`,
+              open: true,
+            }));
+            console.log(
+              "✅ Approved providers loaded from backend:",
+              providers.length,
+            );
+          } else {
+            console.error("❌ Failed to fetch providers:", data);
+            // Fallback to sample data
+            providers = getSampleProviders();
+          }
+        } catch (error) {
+          console.error("❌ Error fetching providers:", error);
+          // Fallback to sample data
+          providers = getSampleProviders();
+        }
+      }
+
+      // Fetch categories from JSON
+      async function fetchCategories() {
+        try {
+          const response = await fetch("./categories.json");
+          categories = await response.json();
+          console.log("✅ Categories loaded from JSON:", categories.length);
+          populateCategorySelect();
+        } catch (error) {
+          console.error("Error fetching categories:", error);
+          // Fallback to hardcoded categories
+          categories = [
+            { category_name: "Home Services", icon: "home" },
+            { category_name: "Automotive Services", icon: "car" },
+            { category_name: "IT & Digital Services", icon: "monitor" },
+            { category_name: "Education & Training", icon: "book-open" },
+            { category_name: "Health & Wellness", icon: "heart" },
+            { category_name: "Events & Entertainment", icon: "calendar" },
+            { category_name: "Professional Services", icon: "briefcase" },
+            { category_name: "Personal Services", icon: "user" },
+            { category_name: "Business Services", icon: "building" },
+            { category_name: "Logistics & Moving", icon: "truck" },
+            { category_name: "Pet Services", icon: "paw-print" },
+            { category_name: "Outdoor & Local Services", icon: "tree-pine" },
+          ];
+          console.log("⚠️ Using fallback categories:", categories.length);
+          populateCategorySelect();
+        }
+      }
+
+      // Populate category select in registration form
+      function populateCategorySelect() {
+        const select = document.getElementById("regCategory");
+        if (!select) return;
+
+        // Clear existing options except the first
+        select.innerHTML = '<option value="">Select your profession</option>';
+
+        // Add all subcategories
+        categories.forEach((cat) => {
+          cat.subcategories.forEach((sub) => {
+            const option = document.createElement("option");
+            option.value = sub.name;
+            option.textContent = sub.name;
+            select.appendChild(option);
+          });
+        });
+      }
+
+      // Sample Provider Data (fallback)
+      function getSampleProviders() {
+        return [
+          {
+            id: 1,
+            name: "Rajesh Kumar",
+            category: "Carpenter",
+            experience: "15 years",
+            rating: 4.9,
+            reviews: 156,
+            phone: "9876543210",
+            email: "rajesh@carpentry.com",
+            location: "Mumbai",
+            price: "₹500-2000/day",
+            aadhaar: "XXXX-XXXX-1111",
+            pan: "ABCDE1234F",
+            verified: true,
+            bio: "Government certified carpenter with 15+ years experience",
+            open: true,
+          },
+          {
+            id: 2,
+            name: "Amit Sharma",
+            category: "Electrician",
+            experience: "12 years",
+            rating: 4.6,
+            reviews: 218,
+            phone: "8765432109",
+            email: "amit@electrofix.com",
+            location: "Delhi",
+            price: "₹400-1200/day",
+            aadhaar: "XXXX-XXXX-2222",
+            pan: "BCDEF2345G",
+            verified: true,
+            bio: "Certified electrician specializing in home and office repairs",
+            open: true,
+          },
+          {
+            id: 3,
+            name: "Pooja Verma",
+            category: "Plumber",
+            experience: "10 years",
+            rating: 4.8,
+            reviews: 193,
+            phone: "7654321098",
+            email: "pooja@fixitplumber.com",
+            location: "Bengaluru",
+            price: "₹300-900/day",
+            aadhaar: "XXXX-XXXX-3333",
+            pan: "CDEFG3456H",
+            verified: true,
+            bio: "Expert in leak repairs, bathroom remodeling and smart plumbing",
+            open: true,
+          },
+          {
+            id: 4,
+            name: "Kavita Singh",
+            category: "Painter",
+            experience: "8 years",
+            rating: 4.7,
+            reviews: 145,
+            phone: "6543210987",
+            email: "kavita@perfectpaint.com",
+            location: "Chennai",
+            price: "₹250-1200/day",
+            aadhaar: "XXXX-XXXX-4444",
+            pan: "DEFGH4567J",
+            verified: true,
+            bio: "Interior and exterior painting specialist with premium finishes",
+            open: true,
+          },
+          {
+            id: 5,
+            name: "Sunil Rao",
+            category: "Driver",
+            experience: "5 years",
+            rating: 4.5,
+            reviews: 107,
+            phone: "5432109876",
+            email: "sunil@safe-drive.com",
+            location: "Kolkata",
+            price: "₹150-600/hr",
+            aadhaar: "XXXX-XXXX-5555",
+            pan: "EFGHI5678K",
+            verified: true,
+            bio: "Professional driver offering safe city and outstation travel",
+            open: true,
+          },
+          {
+            id: 6,
+            name: "Neha Patel",
+            category: "Tutor",
+            experience: "7 years",
+            rating: 4.9,
+            reviews: 84,
+            phone: "4321098765",
+            email: "neha@tutorplus.com",
+            location: "Pune",
+            price: "₹300-1000/hr",
+            aadhaar: "XXXX-XXXX-6666",
+            pan: "FGHIJ6789L",
+            verified: true,
+            bio: "Experienced tutor for maths, science and competitive exam coaching",
+            open: true,
+          },
+          {
+            id: 7,
+            name: "Rohit Mehra",
+            category: "Mechanic",
+            experience: "11 years",
+            rating: 4.6,
+            reviews: 132,
+            phone: "3210987654",
+            email: "rohit@mechmasters.com",
+            location: "Ahmedabad",
+            price: "₹400-1800/day",
+            aadhaar: "XXXX-XXXX-7777",
+            pan: "GHIJK7890M",
+            verified: true,
+            bio: "Automobile repair specialist for cars and light commercial vehicles",
+            open: true,
+          },
+          {
+            id: 8,
+            name: "Sonal Desai",
+            category: "Maid",
+            experience: "6 years",
+            rating: 4.7,
+            reviews: 98,
+            phone: "2109876543",
+            email: "sonal@homecare.com",
+            location: "Hyderabad",
+            price: "₹200-700/day",
+            aadhaar: "XXXX-XXXX-8888",
+            pan: "HIJKL8901N",
+            verified: true,
+            bio: "Reliable home help and cleaning service with verified background",
+            open: true,
+          },
+          {
+            id: 9,
+            name: "Vikram Yadav",
+            category: "Labour",
+            experience: "9 years",
+            rating: 4.4,
+            reviews: 64,
+            phone: "1098765432",
+            email: "vikram@hardworklabour.com",
+            location: "Lucknow",
+            price: "₹250-900/day",
+            aadhaar: "XXXX-XXXX-9999",
+            pan: "IJKLM9012O",
+            verified: true,
+            bio: "Skilled labour force for construction, moving and assembly jobs",
+            open: true,
+          },
+        ];
+      }
+
+      // Geolocation Helpers
+      function autoFillProviderLocation() {
+        if (!navigator.geolocation) {
+          showToast("Geolocation is not supported by your browser", true);
+          return;
+        }
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            document.getElementById("regLocation").value =
+              `${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`;
+          },
+          () => {
+            showToast("Unable to get location automatically", true);
+          },
+        );
+      }
+
+      function autoFillBookingLocation() {
+        if (!navigator.geolocation) {
+          showToast("Geolocation is not supported by your browser", true);
+          return;
+        }
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            document.getElementById("bookingUserLocation").value =
+              `${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`;
+          },
+          () => {
+            showToast("Unable to get location automatically", true);
+          },
+        );
+      }
+
+      function calculateDistance(lat1, lon1, lat2, lon2) {
+        const toRad = (deg) => (deg * Math.PI) / 180;
+        const R = 6371; // km
+        const dLat = toRad(lat2 - lat1);
+        const dLon = toRad(lon2 - lon1);
+        const a =
+          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos(toRad(lat1)) *
+            Math.cos(toRad(lat2)) *
+            Math.sin(dLon / 2) *
+            Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
+      }
+
+      function enrichBookingsWithDistance(bookings) {
+        return bookings.map((booking) => {
+          if (
+            booking.userLocation &&
+            booking.business?.lat &&
+            booking.business?.lng
+          ) {
+            const coords = booking.userLocation
+              .split(",")
+              .map((v) => parseFloat(v.trim()));
+            if (coords.length === 2 && !isNaN(coords[0]) && !isNaN(coords[1])) {
+              const distanceKm = calculateDistance(
+                coords[0],
+                coords[1],
+                booking.business.lat,
+                booking.business.lng,
+              );
+              return {
+                ...booking,
+                distance: `${distanceKm.toFixed(1)} km`,
+              };
+            }
+          }
+          return booking;
+        });
+      }
+
+      // Initialize app
+      async function initApp() {
+        await fetchCategories();
+        await fetchProviders();
+        selectAuthType("user");
+        renderHome();
+      }
+
+      // Helper Functions
+      function showToast(msg, isError = false) {
+        const toast = document.getElementById("toast");
+        toast.textContent = msg;
+        toast.style.background = isError ? "#dc2626" : "#1f2937";
+        toast.classList.remove("hidden");
+        setTimeout(() => toast.classList.add("hidden"), 3000);
+      }
+
+      async function navigateTo(page) {
+        document
+          .querySelectorAll(".page")
+          .forEach((p) => p.classList.add("hidden"));
+        document.getElementById(`${page}Page`).classList.remove("hidden");
+
+        if (page === "home") {
+          await fetchProviders();
+          renderHome();
+        } else if (page === "providers") {
+          await fetchProviders();
+          renderProviders();
+        } else if (page === "profile") loadUserProfile();
+        else if (page === "bookings") loadBookings();
+        else if (page === "admin") loadAdminData();
+        else if (page === "provider") loadProviderDashboard();
+      }
+
+      function renderHome() {
+        renderCategories();
+        renderFeaturedProviders();
+      }
+
+      function renderCategories() {
+        const grid = document.getElementById("categoriesGrid");
+        if (grid) {
+          grid.innerHTML = categories
+            .map(
+              (cat) => `
+                    <div onclick="showSubcategories('${cat.id}')" class="text-center cursor-pointer group">
+                        <div class="w-20 h-20 mx-auto bg-blue-100 rounded-full flex items-center justify-center group-hover:bg-blue-200 transition">
+                            <i data-lucide="${cat.icon}" class="w-8 h-8 text-blue-800"></i>
+                        </div>
+                        <p class="mt-2 text-sm font-semibold">${cat.category_name}</p>
+                    </div>
+                `,
+            )
+            .join("");
+          lucide.createIcons();
+        }
+      }
+
+      function showSubcategories(categoryId) {
+        const category = categories.find((c) => c.id == categoryId);
+        if (!category) return;
+
+        document.getElementById("subcategoriesTitle").textContent =
+          category.category_name;
+        const grid = document.getElementById("subcategoriesGrid");
+        grid.innerHTML = category.subcategories
+          .map(
+            (sub) => `
+              <div onclick="searchByCategory('${sub.name}')" class="text-center cursor-pointer group">
+                  <div class="w-16 h-16 mx-auto bg-blue-50 rounded-full flex items-center justify-center group-hover:bg-blue-100 transition">
+                      <i data-lucide="chevron-right" class="w-6 h-6 text-blue-600"></i>
+                  </div>
+                  <p class="mt-2 text-sm font-semibold">${sub.name}</p>
+              </div>
+            `,
+          )
+          .join("");
+        lucide.createIcons();
+
+        // Hide categories, show subcategories
+        document
+          .getElementById("categoriesGrid")
+          .parentElement.classList.add("hidden");
+        document
+          .getElementById("subcategoriesSection")
+          .classList.remove("hidden");
+      }
+
+      function hideSubcategories() {
+        document
+          .getElementById("categoriesGrid")
+          .parentElement.classList.remove("hidden");
+        document.getElementById("subcategoriesSection").classList.add("hidden");
+      }
+
+      function renderFeaturedProviders() {
+        const grid = document.getElementById("featuredProviders");
+        if (grid) {
+          grid.innerHTML = providers
+            .slice(0, 6)
+            .map((p) => createProviderCard(p))
+            .join("");
+          lucide.createIcons();
+        }
+      }
+
+      function renderProviders() {
+        const grid = document.getElementById("providersGrid");
+        if (grid) {
+          grid.innerHTML = providers.map((p) => createProviderCard(p)).join("");
+          lucide.createIcons();
+        }
+      }
+
+      function createProviderCard(provider) {
+        return `
+                <div class="provider-card cursor-pointer" onclick="viewProvider('${provider.id}')">
+                    <div class="h-40 bg-gradient-to-r from-blue-600 to-blue-800 relative">
+                        <div class="absolute top-3 right-3">
+                            <span class="verified-icon"><i data-lucide="check-circle" class="w-3 h-3"></i> GOVT VERIFIED</span>
+                        </div>
+                        <div class="absolute bottom-3 left-3">
+                            <span class="bg-yellow-400 text-blue-900 px-2 py-1 rounded text-xs font-semibold">⭐ ${provider.rating}</span>
+                        </div>
+                    </div>
+                    <div class="p-5">
+                        <h3 class="font-bold text-xl mb-1">${provider.name}</h3>
+                        <p class="text-blue-600 font-semibold mb-2">${provider.category}</p>
+                        <p class="text-gray-600 text-sm mb-2">📞 ${provider.phone}</p>
+                        <p class="text-gray-600 text-sm mb-2">📍 ${provider.location}</p>
+                        <p class="text-gray-600 font-semibold mb-3">💰 ${provider.price}</p>
+                        <div class="flex gap-2">
+                            <button onclick="event.stopPropagation(); contactProvider('${provider.phone}')" class="flex-1 bg-green-600 text-white py-2 rounded-lg text-sm hover:bg-green-700">
+                                <i data-lucide="phone" class="w-4 h-4 inline"></i> Call
+                            </button>
+                            <button onclick="event.stopPropagation(); bookService('${provider.id}')" class="flex-1 bg-blue-600 text-white py-2 rounded-lg text-sm hover:bg-blue-700">
+                                <i data-lucide="calendar" class="w-4 h-4 inline"></i> Book
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+      }
+
+      function viewProvider(id) {
+        const provider = providers.find((p) => p.id === id);
+        if (!provider) return;
+
+        const modalContent = document.getElementById("providerModalContent");
+        modalContent.innerHTML = `
+                <div class="flex justify-between items-start mb-4">
+                    <h2 class="font-display text-2xl font-bold">${provider.name}</h2>
+                    <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">&times;</button>
+                </div>
+                <div class="mb-4">
+                    <span class="verified-icon"><i data-lucide="check-circle" class="w-4 h-4"></i> Government Verified Professional</span>
+                </div>
+                <div class="space-y-3">
+                    <p><strong>Category:</strong> ${provider.category}</p>
+                    <p><strong>Experience:</strong> ${provider.experience}</p>
+                    <p><strong>Rating:</strong> ⭐ ${provider.rating} (${provider.reviews} reviews)</p>
+                    <p><strong>Location:</strong> ${provider.location}</p>
+                    <p><strong>Pricing:</strong> ${provider.price}</p>
+                    <p><strong>About:</strong> ${provider.bio}</p>
+                    <p><strong>Government ID Verified:</strong> ✅ Aadhaar & PAN Verified</p>
+                </div>
+                <div class="flex gap-3 mt-6">
+                    <button onclick="contactProvider('${provider.phone}')" class="flex-1 bg-green-600 text-white py-2 rounded-lg font-semibold text-sm">
+                        <i data-lucide="phone" class="w-4 h-4 inline"></i> Call
+                    </button>
+                    <button onclick="bookService('${provider.id}'); closeModal()" class="flex-1 bg-blue-600 text-white py-2 rounded-lg font-semibold text-sm">
+                        <i data-lucide="calendar" class="w-4 h-4 inline"></i> Book
+                    </button>
+                    <button onclick="closeModal()" class="flex-1 bg-purple-600 text-white py-2 rounded-lg font-semibold text-sm">
+                        Reviews
+                    </button>
+                </div>
+            `;
+        lucide.createIcons();
+        document.getElementById("providerModal").classList.remove("hidden");
+      }
+
+      function closeModal() {
+        document.getElementById("providerModal").classList.add("hidden");
+      }
+
+      async function searchServices() {
+        const query = document.getElementById("homeSearch").value.trim();
+        if (!query) {
+          renderFeaturedProviders();
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `${BACKEND_URL}/api/businesses/search/${encodeURIComponent(query)}`,
+          );
+          const data = await response.json();
+          if (data.success) {
+            const searchResults = data.data.map((business) => ({
+              id: business.id,
+              name: business.name,
+              category: business.category,
+              experience: "Verified Professional",
+              rating: business.rating,
+              reviews: business.reviews,
+              phone: business.phone,
+              email: "",
+              location: business.city,
+              price: business.price,
+              aadhaar: "XXXX-XXXX-XXXX",
+              pan: "XXXXX0000X",
+              verified: true,
+              bio: `${business.category} service provider in ${business.city}`,
+              open: business.open,
+            }));
+
+            const grid = document.getElementById("featuredProviders");
+            if (grid) {
+              grid.innerHTML = searchResults
+                .map((p) => createProviderCard(p))
+                .join("");
+              lucide.createIcons();
+              showToast(`Found ${searchResults.length} verified providers`);
+            }
+          } else {
+            showToast("Search failed", true);
+          }
+        } catch (error) {
+          console.error("Search error:", error);
+          showToast("Search failed", true);
+        }
+      }
+
+      async function searchByCategory(category) {
+        try {
+          const response = await fetch(
+            `${BACKEND_URL}/api/businesses/search/${encodeURIComponent(category)}`,
+          );
+          const data = await response.json();
+          if (data.success) {
+            const categoryResults = data.data.map((business) => ({
+              id: business.id,
+              name: business.name,
+              category: business.category,
+              experience: "Verified Professional",
+              rating: business.rating,
+              reviews: business.reviews,
+              phone: business.phone,
+              email: "",
+              location: business.city,
+              price: business.price,
+              aadhaar: "XXXX-XXXX-XXXX",
+              pan: "XXXXX0000X",
+              verified: true,
+              bio: `${business.category} service provider in ${business.city}`,
+              open: business.open,
+            }));
+
+            const grid = document.getElementById("featuredProviders");
+            if (grid) {
+              grid.innerHTML = categoryResults
+                .map((p) => createProviderCard(p))
+                .join("");
+              lucide.createIcons();
+              showToast(
+                `Showing ${categoryResults.length} verified ${category}s`,
+              );
+            }
+          } else {
+            showToast("Category search failed", true);
+          }
+        } catch (error) {
+          console.error("Category search error:", error);
+          showToast("Category search failed", true);
+        }
+      }
+
+      // OTP Functions
+      async function sendOTP() {
+        const mobile = document.getElementById("loginMobile").value;
+        if (!mobile || mobile.length !== 10) {
+          showToast("Enter valid 10-digit mobile number", true);
+          return;
+        }
+
+        try {
+          if (authType === "provider") {
+            const checkResponse = await fetch(
+              `${BACKEND_URL}/api/users/check-mobile/${mobile}`,
+            );
+            const checkData = await checkResponse.json();
+
+            if (!checkData.success || !checkData.exists) {
+              showToast(
+                "Provider number not registered. Please register first.",
+                true,
+              );
+              return;
+            }
+          }
+
+          const response = await fetch(`${BACKEND_URL}/send-mobile-otp`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ mobile }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            console.log("Demo OTP:", data.demoOtp);
+            showToast(`OTP sent: ${data.demoOtp} (Demo)`);
+            document.getElementById("otpSection").classList.remove("hidden");
+            window.pendingLoginMobile = mobile;
+          } else {
+            showToast(data.error || "Failed to send OTP", true);
+          }
+        } catch (error) {
+          console.error("Send OTP error:", error);
+          showToast("Failed to send OTP", true);
+        }
+      }
+
+      async function verifyOTP() {
+        const inputs = document.querySelectorAll("#otpSection .otp-input");
+        const enteredOTP = Array.from(inputs)
+          .map((i) => i.value)
+          .join("");
+
+        if (enteredOTP.length !== 4) {
+          showToast("Please enter complete OTP", true);
+          return;
+        }
+
+        try {
+          const response = await fetch(`${BACKEND_URL}/verify-mobile-otp`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              mobile: window.pendingLoginMobile,
+              otp: enteredOTP,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            // Fetch existing user data
+            const userResponse = await fetch(
+              `${BACKEND_URL}/api/users/check-mobile/${window.pendingLoginMobile}`,
+            );
+            const userData = await userResponse.json();
+
+            if (userData.success && userData.exists) {
+              // Get full user details
+              const usersResponse = await fetch(`${BACKEND_URL}/api/users`);
+              const usersList = await usersResponse.json();
+              const user = usersList.success
+                ? usersList.data.find(
+                    (u) => u.mobile === window.pendingLoginMobile,
+                  )
+                : null;
+
+              if (user) {
+                const loggedInUser = {
+                  id: user._id,
+                  name: user.name,
+                  mobile: user.mobile,
+                  email: user.email,
+                  role: user.role,
+                };
+                setCurrentUser(loggedInUser);
+                showToast(`Welcome back, ${loggedInUser.name}!`);
+                navigateTo("home");
+              } else if (authType === "user") {
+                const loggedInUser = {
+                  id: `guest_${window.pendingLoginMobile}`,
+                  name: `User ${window.pendingLoginMobile}`,
+                  mobile: window.pendingLoginMobile,
+                  email: null,
+                  role: "user",
+                };
+                setCurrentUser(loggedInUser);
+                showToast(`Welcome, ${loggedInUser.name}!`);
+                navigateTo("home");
+              } else {
+                showToast("User data not found. Please contact support.", true);
+              }
+            } else {
+              showToast("User not found. Please register first.", true);
+            }
+          } else {
+            showToast(data.error || "Invalid OTP", true);
+          }
+        } catch (error) {
+          console.error("Verify OTP error:", error);
+          showToast("OTP verification failed", true);
+        }
+      }
+
+      async function sendRegistrationOTP() {
+        const mobile = document.getElementById("regMobile").value;
+        if (!mobile || mobile.length !== 10) {
+          showToast("Enter valid mobile number", true);
+          return;
+        }
+
+        try {
+          const response = await fetch(`${BACKEND_URL}/send-mobile-otp`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ mobile }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            console.log("Registration Demo OTP:", data.demoOtp);
+            showToast(`OTP sent: ${data.demoOtp} (Demo)`);
+            document.getElementById("regOtpSection").classList.remove("hidden");
+            window.pendingRegMobile = mobile;
+          } else {
+            showToast(data.error || "Failed to send OTP", true);
+          }
+        } catch (error) {
+          console.error("Send registration OTP error:", error);
+          showToast("Failed to send OTP", true);
+        }
+      }
+
+      async function verifyRegistrationOTP() {
+        const inputs = document.querySelectorAll(
+          "#regOtpSection .otp-input-sm",
+        );
+        const enteredOTP = Array.from(inputs)
+          .map((i) => i.value)
+          .join("");
+
+        if (enteredOTP.length !== 4) {
+          showToast("Please enter complete OTP", true);
+          return;
+        }
+
+        try {
+          const response = await fetch(`${BACKEND_URL}/verify-mobile-otp`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              mobile: window.pendingRegMobile,
+              otp: enteredOTP,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            showToast("Mobile verified successfully!");
+            document.getElementById("regOtpSection").classList.add("hidden");
+            window.mobileVerified = true;
+          } else {
+            showToast(data.error || "Invalid OTP", true);
+          }
+        } catch (error) {
+          console.error("Verify registration OTP error:", error);
+          showToast("OTP verification failed", true);
+        }
+      }
+
+      // File Upload Handlers
+      document
+        .getElementById("aadhaarUpload")
+        ?.addEventListener("change", function (e) {
+          if (e.target.files[0]) {
+            document.getElementById("aadhaarStatus").innerHTML =
+              '<span class="text-green-600">✓ Aadhaar uploaded</span>';
+          }
+        });
+
+      document
+        .getElementById("panUpload")
+        ?.addEventListener("change", function (e) {
+          if (e.target.files[0]) {
+            document.getElementById("panStatus").innerHTML =
+              '<span class="text-green-600">✓ PAN uploaded</span>';
+          }
+        });
+
+      async function completeRegistration() {
+        const name = document.getElementById("regName").value;
+        const mobile = document.getElementById("regMobile").value;
+        const email = document.getElementById("regEmail").value;
+        const aadhaar = document.getElementById("regAadhaar").value;
+        const pan = document.getElementById("regPan").value;
+        const category = document.getElementById("regCategory").value;
+        const experience =
+          document.getElementById("regExperience")?.value || "";
+        const terms = document.getElementById("regTerms").checked;
+
+        if (!name || !mobile || !email || !aadhaar || !pan || !category) {
+          showToast("Please fill all required fields", true);
+          return;
+        }
+
+        if (!window.mobileVerified) {
+          showToast("Please verify mobile number with OTP first", true);
+          return;
+        }
+
+        if (!terms) {
+          showToast("Please accept terms and conditions", true);
+          return;
+        }
+
+        try {
+          const location = document.getElementById("regLocation").value;
+          const response = await fetch(`${BACKEND_URL}/api/users/register`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name,
+              mobile,
+              email,
+              role: "partner", // Partner application
+              category,
+              aadhaar,
+              pan,
+              location,
+              experience,
+              certificates: [], // For future file uploads
+            }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            showToast(data.message);
+            // Don't auto-login for partner applications - they need approval
+            navigateTo("home");
+          } else {
+            showToast(data.error || "Registration failed", true);
+          }
+        } catch (error) {
+          console.error("Registration error:", error);
+          showToast("Registration failed. Please try again.", true);
+        }
+      }
+
+      function showLogin() {
+        document.getElementById("loginForm").classList.remove("hidden");
+        document.getElementById("registerForm").classList.add("hidden");
+        document
+          .getElementById("loginTab")
+          .classList.add("border-blue-900", "text-blue-900");
+        document.getElementById("loginTab").classList.remove("text-gray-500");
+        document
+          .getElementById("registerTab")
+          .classList.remove("border-blue-900", "text-blue-900");
+        document.getElementById("registerTab").classList.add("text-gray-500");
+      }
+
+      function showRegister() {
+        if (authType === "user") {
+          return;
+        }
+        document.getElementById("loginForm").classList.add("hidden");
+        document.getElementById("registerForm").classList.remove("hidden");
+        document
+          .getElementById("registerTab")
+          .classList.add("border-blue-900", "text-blue-900");
+        document
+          .getElementById("registerTab")
+          .classList.remove("text-gray-500");
+        document
+          .getElementById("loginTab")
+          .classList.remove("border-blue-900", "text-blue-900");
+        document.getElementById("loginTab").classList.add("text-gray-500");
+      }
+
+      function updateUIForUser() {
+        const adminButton = document.getElementById("adminButton");
+        if (currentUser) {
+          document.getElementById("userInfo").classList.remove("hidden");
+          document.getElementById("userName").textContent = currentUser.name;
+          document.getElementById("loginBtn").classList.add("hidden");
+          if (adminButton) {
+            adminButton.style.display =
+              currentUser.role === "admin" ? "inline-flex" : "none";
+          }
+        } else {
+          if (adminButton) {
+            adminButton.style.display = "none";
+          }
+        }
+      }
+
+      function selectAuthType(type) {
+        authType = type;
+        const userButton = document.getElementById("authUserButton");
+        const providerButton = document.getElementById("authProviderButton");
+        const registerTab = document.getElementById("registerTab");
+
+        if (type === "user") {
+          userButton.classList.add("bg-blue-900", "text-white");
+          userButton.classList.remove("border", "text-blue-900");
+          providerButton.classList.remove("bg-blue-900", "text-white");
+          providerButton.classList.add(
+            "border",
+            "border-blue-900",
+            "text-blue-900",
+          );
+          registerTab.style.display = "none";
+          showLogin();
+        } else {
+          providerButton.classList.add("bg-blue-900", "text-white");
+          providerButton.classList.remove("border", "text-blue-900");
+          userButton.classList.remove("bg-blue-900", "text-white");
+          userButton.classList.add(
+            "border",
+            "border-blue-900",
+            "text-blue-900",
+          );
+          registerTab.style.display = "inline-flex";
+          showRegister();
+        }
+      }
+
+      function logout() {
+        currentUser = null;
+        localStorage.removeItem("gov_currentUser");
+        document.getElementById("userInfo").classList.add("hidden");
+        document.getElementById("loginBtn").classList.remove("hidden");
+        showToast("Logged out successfully");
+        navigateTo("home");
+      }
+
+      function showAdminPanel() {
+        if (!currentUser || currentUser.role !== "admin") {
+          showToast(
+            "Admin access restricted. Please login with an admin account.",
+            true,
+          );
+          return;
+        }
+        loadAdminData();
+        navigateTo("admin");
+      }
+
+      async function loadAdminData() {
+        try {
+          // Fetch users from backend
+          const adminHeaders =
+            currentUser?.role === "admin"
+              ? { "x-user-mobile": currentUser.mobile }
+              : {};
+          const usersResponse = await fetch(`${BACKEND_URL}/api/admin/users`, {
+            headers: {
+              "Content-Type": "application/json",
+              ...adminHeaders,
+            },
+          });
+          const usersData = await usersResponse.json();
+          const backendUsers = usersData.success ? usersData.data : [];
+
+          // Fetch total bookings
+          const bookingsResponse = await fetch(
+            `${BACKEND_URL}/api/bookings/admin/total`,
+            {
+              headers: {
+                ...adminHeaders,
+              },
+            },
+          );
+          const bookingsData = bookingsResponse.ok
+            ? await bookingsResponse.json()
+            : { total: 0 };
+          const totalBookings = bookingsData.success ? bookingsData.total : 0;
+
+          document.getElementById("totalUsers").textContent =
+            backendUsers.length;
+          document.getElementById("totalProviders").textContent =
+            providers.length;
+          document.getElementById("pendingVerification").textContent =
+            backendUsers.filter(
+              (u) => u.role === "partner" && u.applicationStatus === "pending",
+            ).length;
+          document.getElementById("totalBookings").textContent = totalBookings;
+
+          const tbody = document.getElementById("adminUsersList");
+          const allUsers = [
+            ...backendUsers
+              .filter((u) => u.role === "user")
+              .map((u) => ({
+                id: u._id,
+                name: u.name,
+                mobile: u.mobile,
+                email: u.email,
+                aadhaar: "XXXX-XXXX-XXXX",
+                pan: "XXXXX0000X",
+                category: "User",
+                role: u.role,
+                verified: true,
+                type: "Registered User",
+              })),
+            ...backendUsers
+              .filter((u) => u.role === "partner")
+              .map((u) => ({
+                id: u._id,
+                name: u.name,
+                mobile: u.mobile,
+                email: u.email,
+                aadhaar: u.documents?.aadhaar || "XXXX-XXXX-XXXX",
+                pan: u.documents?.pan || "XXXXX0000X",
+                category: u.category || "Pending",
+                role: u.role,
+                applicationStatus: u.applicationStatus,
+                verified: u.applicationStatus === "approved",
+                type:
+                  u.applicationStatus === "approved"
+                    ? "Approved Provider"
+                    : u.applicationStatus === "pending"
+                      ? "Pending Application"
+                      : "Rejected Application",
+                experience: u.documents?.experience || "Not provided",
+              })),
+            ...providers.map((p) => ({
+              ...p,
+              role: "provider",
+              type: "Verified Provider",
+            })),
+          ];
+
+          tbody.innerHTML = allUsers
+            .map(
+              (user) => `
+                  <tr>
+                      <td>${user.id}</td>
+                      <td>${user.name}</td>
+                      <td>${user.mobile || user.phone}</td>
+                      <td>${user.email || "-"}</td>
+                      <td>${user.aadhaar || "XXXX-XXXX-XXXX"}</td>
+                      <td>${user.pan || "XXXXX0000X"}</td>
+                      <td>${user.category || "-"}</td>
+                      <td>${user.role === "partner" ? "Partner Application" : "User"}</td>
+                      <td>${
+                        user.applicationStatus === "approved"
+                          ? '<span class="verified-icon">Approved</span>'
+                          : user.applicationStatus === "pending"
+                            ? '<span class="text-yellow-600">Pending</span>'
+                            : user.applicationStatus === "rejected"
+                              ? '<span class="text-red-600">Rejected</span>'
+                              : user.verified
+                                ? '<span class="verified-icon">Verified</span>'
+                                : '<span class="text-yellow-600">Pending</span>'
+                      }</td>
+                      <td>${
+                        user.applicationStatus === "pending"
+                          ? `<button onclick="approveApplication('${user.id}')" class="text-green-600 text-sm mr-2">Approve</button>
+                         <button onclick="rejectApplication('${user.id}')" class="text-red-600 text-sm">Reject</button>`
+                          : user.applicationStatus === "approved"
+                            ? `<button onclick="rejectApplication('${user.id}')" class="text-red-600 text-sm">Revoke</button>`
+                            : user.applicationStatus === "rejected"
+                              ? `<button onclick="approveApplication('${user.id}')" class="text-green-600 text-sm">Approve</button>`
+                              : '<span class="text-gray-500">N/A</span>'
+                      }</td>
+                  </tr>
+              `,
+            )
+            .join("");
+        } catch (error) {
+          console.error("Load admin data error:", error);
+          showToast("Failed to load admin data", true);
+        }
+      }
+
+      function verifyUser(id) {
+        const user = users.find((u) => u.id === id);
+        if (user) {
+          user.verified = true;
+          localStorage.setItem("gov_users", JSON.stringify(users));
+
+          // Add to providers if not exists
+          if (!providers.find((p) => p.phone === user.mobile)) {
+            providers.push({
+              id: Date.now(),
+              name: user.name,
+              category: user.category,
+              phone: user.mobile,
+              email: user.email,
+              location: "To be updated",
+              price: "Contact for pricing",
+              rating: 5.0,
+              reviews: 0,
+              experience: "New Provider",
+              bio: "Government verified professional",
+              verified: true,
+            });
+            localStorage.setItem("gov_providers", JSON.stringify(providers));
+          }
+
+          showToast("User verified successfully");
+          loadAdminData();
+        }
+      }
+
+      async function approveApplication(userId) {
+        try {
+          const response = await fetch(
+            `${BACKEND_URL}/api/users/${userId}/approve`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                "x-user-mobile": currentUser?.mobile || "",
+              },
+            },
+          );
+          const data = await response.json();
+          if (data.success) {
+            showToast("Partner application approved successfully");
+            loadAdminData();
+          } else {
+            showToast(data.error || "Failed to approve application", true);
+          }
+        } catch (error) {
+          showToast("Failed to approve application", true);
+        }
+      }
+
+      async function rejectApplication(userId) {
+        try {
+          const response = await fetch(
+            `${BACKEND_URL}/api/users/${userId}/reject`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                "x-user-mobile": currentUser?.mobile || "",
+              },
+            },
+          );
+          const data = await response.json();
+          if (data.success) {
+            showToast("Partner application rejected");
+            loadAdminData();
+          } else {
+            showToast(data.error || "Failed to reject application", true);
+          }
+        } catch (error) {
+          showToast("Failed to reject application", true);
+        }
+      }
+
+      function contactProvider(phone) {
+        window.location.href = `tel:+91${phone}`;
+      }
+
+      function bookService(providerId) {
+        if (!currentUser) {
+          showToast("Please login to book services", true);
+          navigateTo("auth");
+          return;
+        }
+        createBooking(providerId);
+      }
+
+      // OTP Input Navigation
+      function moveNext(element, index) {
+        if (element.value.length === 1) {
+          const inputs = document.querySelectorAll("#otpSection .otp-input");
+          if (index < inputs.length - 1) inputs[index + 1].focus();
+        }
+      }
+
+      function moveBack(event, element, index) {
+        if (event.key === "Backspace" && !element.value && index > 0) {
+          const inputs = document.querySelectorAll("#otpSection .otp-input");
+          inputs[index - 1].focus();
+        }
+      }
+
+      function moveNextReg(element, index) {
+        if (element.value.length === 1) {
+          const inputs = document.querySelectorAll(
+            "#regOtpSection .otp-input-sm",
+          );
+          if (index < inputs.length - 1) inputs[index + 1].focus();
+        }
+      }
+
+      // =========================
+      // USER PROFILE FUNCTIONS
+      // =========================
+      async function loadUserProfile() {
+        try {
+          if (!currentUser || !currentUser.id) {
+            showToast("Please login first", true);
+            navigateTo("auth");
+            return;
+          }
+
+          const response = await fetch(
+            `${BACKEND_URL}/api/profile/${currentUser.id}`,
+          );
+          const data = await response.json();
+
+          if (data.success) {
+            const profile = data.data;
+            document.getElementById("profileInitial").textContent = profile.name
+              ? profile.name.charAt(0).toUpperCase()
+              : "U";
+            document.getElementById("profileName").textContent =
+              profile.name || "User";
+            document.getElementById("profileEmail").textContent =
+              profile.email || "-";
+            document.getElementById("profileMobile").textContent =
+              profile.mobile || "-";
+            document.getElementById("profilePhoneEdit").textContent =
+              profile.mobile || "-";
+            document.getElementById("statsBookings").textContent =
+              profile.bookings || 0;
+            document.getElementById("statsReviews").textContent =
+              profile.reviews || 0;
+          }
+        } catch (error) {
+          console.error("Load profile error:", error);
+          showToast("Failed to load profile", true);
+        }
+      }
+
+      // =========================
+      // BOOKINGS FUNCTIONS
+      // =========================
+      let currentFilter = "all";
+
+      async function loadBookings() {
+        try {
+          if (!currentUser || !currentUser.id) {
+            showToast("Please login first", true);
+            navigateTo("auth");
+            return;
+          }
+
+          const response = await fetch(
+            `${BACKEND_URL}/api/bookings/user/${currentUser.id}`,
+          );
+          const data = await response.json();
+
+          if (data.success) {
+            window.userBookings = enrichBookingsWithDistance(data.data || []);
+            renderBookings();
+          }
+        } catch (error) {
+          console.error("Load bookings error:", error);
+          window.userBookings = [];
+          renderBookings();
+        }
+      }
+
+      function renderBookings() {
+        const filtered = window.userBookings.filter(
+          (b) => currentFilter === "all" || b.status === currentFilter,
+        );
+
+        const bookingsList = document.getElementById("bookingsList");
+        if (bookingsList) {
+          if (filtered.length === 0) {
+            bookingsList.innerHTML =
+              '<div class="gov-card p-8 text-center text-gray-600">No bookings found</div>';
+            return;
+          }
+
+          bookingsList.innerHTML = filtered
+            .map(
+              (booking) => `
+            <div class="gov-card p-6">
+              <div class="flex justify-between items-start mb-4">
+                <div>
+                  <h3 class="font-semibold text-lg mb-1">${booking.business?.name || "Service"}</h3>
+                  <p class="text-gray-600 text-sm">${new Date(booking.serviceDate).toLocaleDateString()}</p>
+                  ${booking.userLocation ? `<p class="text-gray-600 text-sm mt-1">Your location: ${booking.userLocation}</p>` : ""}
+                  ${booking.distance ? `<p class="text-gray-600 text-sm mt-1">Distance to provider: ${booking.distance}</p>` : ""}
+                </div>
+                <span class="px-3 py-1 rounded-full text-sm font-semibold ${
+                  booking.status === "completed"
+                    ? "bg-green-100 text-green-800"
+                    : booking.status === "confirmed"
+                      ? "bg-blue-100 text-blue-800"
+                      : booking.status === "cancelled"
+                        ? "bg-red-100 text-red-800"
+                        : "bg-yellow-100 text-yellow-800"
+                }">
+                  ${booking.status.toUpperCase()}
+                </span>
+              </div>
+              <p class="text-gray-600 mb-4">${booking.address || "Service location"}</p>
+              <div class="flex gap-2">
+                ${booking.status === "pending" ? `<button onclick="cancelBooking('${booking.id}')" class="text-sm text-red-600">Cancel</button>` : ""}
+                ${booking.status === "completed" ? `<button onclick="openReviewModal('${booking.businessId}')" class="text-sm text-blue-600">Leave Review</button>` : ""}
+              </div>
+            </div>
+          `,
+            )
+            .join("");
+        }
+      }
+
+      function filterBookings(status) {
+        currentFilter = status;
+        renderBookings();
+      }
+
+      async function cancelBooking(bookingId) {
+        try {
+          const response = await fetch(
+            `${BACKEND_URL}/api/bookings/${bookingId}`,
+            {
+              method: "DELETE",
+            },
+          );
+          const data = await response.json();
+          if (data.success) {
+            showToast("Booking cancelled");
+            loadBookings();
+          } else {
+            showToast(data.error || "Failed to cancel booking", true);
+          }
+        } catch (error) {
+          showToast("Failed to cancel booking", true);
+        }
+      }
+
+      async function createBooking(businessId) {
+        if (!currentUser || !currentUser.id) {
+          showToast("Please login first", true);
+          navigateTo("auth");
+          return;
+        }
+
+        const today = new Date().toISOString().split("T")[0];
+        const html = `
+          <div>
+            <h3 class="font-semibold mb-4">Book Service</h3>
+            <div class="mb-4">
+              <label class="block text-sm font-semibold mb-2">Service Date</label>
+              <input type="date" id="bookingDate" min="${today}" class="form-input">
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm font-semibold mb-2">Service Address</label>
+              <input type="text" id="bookingAddress" placeholder="Enter service location" class="form-input">
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm font-semibold mb-2">Your Location</label>
+              <div class="flex gap-2">
+                <input type="text" id="bookingUserLocation" placeholder="Your current area" class="form-input flex-1">
+                <button type="button" onclick="autoFillBookingLocation()" class="bg-blue-900 text-white px-4 py-2 rounded-lg text-sm">Auto</button>
+              </div>
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm font-semibold mb-2">Additional Notes (optional)</label>
+              <textarea id="bookingNotes" placeholder="Describe your requirements..." class="form-input" rows="3"></textarea>
+            </div>
+            <button onclick="submitBooking('${businessId}')" class="btn-primary w-full">Confirm Booking</button>
+          </div>
+        `;
+
+        document.getElementById("bookingDetailContent").innerHTML = html;
+        document
+          .getElementById("bookingDetailModal")
+          .classList.remove("hidden");
+      }
+
+      async function submitBooking(businessId) {
+        const date = document.getElementById("bookingDate").value;
+        const address = document.getElementById("bookingAddress").value;
+        const notes = document.getElementById("bookingNotes").value;
+
+        if (!date || !address) {
+          showToast("Please fill required fields", true);
+          return;
+        }
+
+        try {
+          const userLocation = document.getElementById(
+            "bookingUserLocation",
+          ).value;
+          const response = await fetch(`${BACKEND_URL}/api/bookings`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              userId: currentUser.id,
+              businessId,
+              serviceDate: date,
+              address,
+              notes,
+              userLocation,
+              amount: 500,
+            }),
+          });
+
+          const data = await response.json();
+          if (data.success) {
+            showToast("Booking created successfully!");
+            document
+              .getElementById("bookingDetailModal")
+              .classList.add("hidden");
+            loadBookings();
+          } else {
+            showToast(data.error || "Failed to create booking", true);
+          }
+        } catch (error) {
+          showToast("Failed to create booking", true);
+        }
+      }
+
+      // =========================
+      // REVIEW FUNCTIONS
+      // =========================
+      let currentReviewBusinessId = null;
+
+      function openReviewModal(businessId) {
+        currentReviewBusinessId = businessId;
+        const html = `
+          <div>
+            <div class="mb-4">
+              <label class="block text-sm font-semibold mb-2">Rating</label>
+              <div class="flex gap-2 text-3xl">
+                <span onclick="setRating(1)" class="cursor-pointer">☆</span>
+                <span onclick="setRating(2)" class="cursor-pointer">☆</span>
+                <span onclick="setRating(3)" class="cursor-pointer">☆</span>
+                <span onclick="setRating(4)" class="cursor-pointer">☆</span>
+                <span onclick="setRating(5)" class="cursor-pointer">☆</span>
+              </div>
+              <input type="hidden" id="selectedRating" value="0">
+            </div>
+            <div class="mb-4">
+              <label class="block text-sm font-semibold mb-2">Your Review</label>
+              <textarea id="reviewComment" placeholder="Share your experience..." class="form-input" rows="4"></textarea>
+            </div>
+            <button onclick="submitReview()" class="btn-primary w-full">Submit Review</button>
+          </div>
+        `;
+
+        document.getElementById("reviewContent").innerHTML = html;
+        document.getElementById("reviewModal").classList.remove("hidden");
+        lucide.createIcons();
+      }
+
+      function setRating(rating) {
+        document.getElementById("selectedRating").value = rating;
+        const spans = document.querySelectorAll(
+          "#reviewContent .text-3xl span",
+        );
+        spans.forEach((s, i) => {
+          s.textContent = i < rating ? "★" : "☆";
+        });
+      }
+
+      async function submitReview() {
+        const rating = parseInt(
+          document.getElementById("selectedRating").value,
+        );
+        const comment = document.getElementById("reviewComment").value;
+
+        if (rating === 0 || !comment) {
+          showToast("Please provide rating and comment", true);
+          return;
+        }
+
+        try {
+          const response = await fetch(`${BACKEND_URL}/api/reviews`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              userId: currentUser.id,
+              businessId: currentReviewBusinessId,
+              rating,
+              comment,
+            }),
+          });
+
+          const data = await response.json();
+          if (data.success) {
+            showToast("Thank you for your review!");
+            closeReviewModal();
+            fetchProviders(); // Refresh providers to show updated ratings
+          } else {
+            showToast(data.error || "Failed to submit review", true);
+          }
+        } catch (error) {
+          showToast("Failed to submit review", true);
+        }
+      }
+
+      function closeReviewModal() {
+        document.getElementById("reviewModal").classList.add("hidden");
+      }
+
+      // =========================
+      // PROVIDER DASHBOARD
+      // =========================
+      async function loadProviderDashboard() {
+        if (!currentUser || !currentUser.id) {
+          showToast("Please login as provider", true);
+          navigateTo("auth");
+          return;
+        }
+
+        try {
+          const response = await fetch(
+            `${BACKEND_URL}/api/bookings/user/${currentUser.id}`,
+          );
+          const data = await response.json();
+          const providerBookings = data.data || [];
+
+          document.getElementById("providerBookings").textContent =
+            providerBookings.length;
+          document.getElementById("providerCompleted").textContent =
+            providerBookings.filter((b) => b.status === "completed").length;
+
+          const providerBookingsList = document.getElementById(
+            "providerBookingsList",
+          );
+          if (providerBookingsList) {
+            if (providerBookings.length === 0) {
+              providerBookingsList.innerHTML =
+                '<p class="text-gray-600">No bookings yet</p>';
+              return;
+            }
+
+            providerBookingsList.innerHTML = providerBookings
+              .slice(0, 5)
+              .map(
+                (b) => `
+              <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
+                <div>
+                  <p class="font-semibold">${b.business?.name || "Service"}</p>
+                  <p class="text-sm text-gray-600">${new Date(b.serviceDate).toLocaleDateString()}</p>
+                </div>
+                <span class="text-sm font-semibold px-2 py-1 rounded ${
+                  b.status === "completed"
+                    ? "bg-green-100 text-green-800"
+                    : "bg-yellow-100 text-yellow-800"
+                }">${b.status}</span>
+              </div>
+            `,
+              )
+              .join("");
+          }
+        } catch (error) {
+          console.error("Load provider dashboard error:", error);
+        }
+      }
+
+      // =========================
+      // HEADER MENU UPDATES
+      // =========================
+      function updateHeaderMenu() {
+        if (currentUser) {
+          const userMenu = `
+            <div class="flex items-center gap-4 text-white text-sm">
+              <span id="userName">${currentUser.name || "User"}</span>
+              <button onclick="navigateTo('profile')" class="text-yellow-400 hover:text-yellow-300">Profile</button>
+              <button onclick="navigateTo('bookings')" class="text-yellow-400 hover:text-yellow-300">Bookings</button>
+              <button onclick="logout()" class="text-yellow-400 hover:text-yellow-300">Logout</button>
+            </div>
+          `;
+          const userInfo = document.getElementById("userInfo");
+          if (userInfo) {
+            userInfo.innerHTML = userMenu;
+            userInfo.classList.remove("hidden");
+            document.getElementById("loginBtn").classList.add("hidden");
+          }
+        }
+      }
+
+      // Update currentUser when storing
+      function setCurrentUser(user) {
+        currentUser = user;
+        localStorage.setItem("gov_currentUser", JSON.stringify(user));
+        updateHeaderMenu();
+        updateUIForUser();
+      }
+
+      // Initialize
+      if (currentUser) {
+        updateUIForUser();
+        updateHeaderMenu();
+      }
+      initApp();
+      navigateTo("home");
+
+      // Close modal on outside click
+      window.onclick = function (event) {
+        const modal = document.getElementById("providerModal");
+        if (event.target === modal) closeModal();
+      };
+    </script>
+  </body>
+</html>

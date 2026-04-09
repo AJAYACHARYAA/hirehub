@@ -1,0 +1,448 @@
+[
+  {
+    "id": 1,
+    "category_name": "Home Services",
+    "slug": "home-services",
+    "icon": "home",
+    "subcategories": [
+      {
+        "id": 101,
+        "name": "Plumbing",
+        "slug": "plumbing"
+      },
+      {
+        "id": 102,
+        "name": "Electrical Work",
+        "slug": "electrical-work"
+      },
+      {
+        "id": 103,
+        "name": "Carpentry",
+        "slug": "carpentry"
+      },
+      {
+        "id": 104,
+        "name": "Painting",
+        "slug": "painting"
+      },
+      {
+        "id": 105,
+        "name": "AC Repair & Installation",
+        "slug": "ac-repair-installation"
+      },
+      {
+        "id": 106,
+        "name": "Appliance Repair",
+        "slug": "appliance-repair"
+      },
+      {
+        "id": 107,
+        "name": "Pest Control",
+        "slug": "pest-control"
+      },
+      {
+        "id": 108,
+        "name": "Home Cleaning",
+        "slug": "home-cleaning"
+      },
+      {
+        "id": 109,
+        "name": "Renovation & Interior Work",
+        "slug": "renovation-interior-work"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "category_name": "Automotive Services",
+    "slug": "automotive-services",
+    "icon": "car",
+    "subcategories": [
+      {
+        "id": 201,
+        "name": "Car Repair",
+        "slug": "car-repair"
+      },
+      {
+        "id": 202,
+        "name": "Bike Repair",
+        "slug": "bike-repair"
+      },
+      {
+        "id": 203,
+        "name": "Car Wash & Detailing",
+        "slug": "car-wash-detailing"
+      },
+      {
+        "id": 204,
+        "name": "Tire Services",
+        "slug": "tire-services"
+      },
+      {
+        "id": 205,
+        "name": "Battery Replacement",
+        "slug": "battery-replacement"
+      },
+      {
+        "id": 206,
+        "name": "Towing Services",
+        "slug": "towing-services"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "category_name": "IT & Digital Services",
+    "slug": "it-digital-services",
+    "icon": "monitor",
+    "subcategories": [
+      {
+        "id": 301,
+        "name": "Website Development",
+        "slug": "website-development"
+      },
+      {
+        "id": 302,
+        "name": "App Development",
+        "slug": "app-development"
+      },
+      {
+        "id": 303,
+        "name": "UI/UX Design",
+        "slug": "ui-ux-design"
+      },
+      {
+        "id": 304,
+        "name": "Graphic Design",
+        "slug": "graphic-design"
+      },
+      {
+        "id": 305,
+        "name": "SEO Services",
+        "slug": "seo-services"
+      },
+      {
+        "id": 306,
+        "name": "Digital Marketing",
+        "slug": "digital-marketing"
+      },
+      {
+        "id": 307,
+        "name": "Social Media Management",
+        "slug": "social-media-management"
+      },
+      {
+        "id": 308,
+        "name": "Video Editing",
+        "slug": "video-editing"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "category_name": "Education & Training",
+    "slug": "education-training",
+    "icon": "book-open",
+    "subcategories": [
+      {
+        "id": 401,
+        "name": "Home Tutors",
+        "slug": "home-tutors"
+      },
+      {
+        "id": 402,
+        "name": "Online Classes",
+        "slug": "online-classes"
+      },
+      {
+        "id": 403,
+        "name": "Coaching Centers",
+        "slug": "coaching-centers"
+      },
+      {
+        "id": 404,
+        "name": "Skill Development",
+        "slug": "skill-development"
+      },
+      {
+        "id": 405,
+        "name": "Language Training",
+        "slug": "language-training"
+      },
+      {
+        "id": 406,
+        "name": "Music & Dance Classes",
+        "slug": "music-dance-classes"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "category_name": "Health & Wellness",
+    "slug": "health-wellness",
+    "icon": "heart",
+    "subcategories": [
+      {
+        "id": 501,
+        "name": "Doctors & Clinics",
+        "slug": "doctors-clinics"
+      },
+      {
+        "id": 502,
+        "name": "Fitness Trainers",
+        "slug": "fitness-trainers"
+      },
+      {
+        "id": 503,
+        "name": "Yoga Instructors",
+        "slug": "yoga-instructors"
+      },
+      {
+        "id": 504,
+        "name": "Dieticians",
+        "slug": "dieticians"
+      },
+      {
+        "id": 505,
+        "name": "Physiotherapy",
+        "slug": "physiotherapy"
+      },
+      {
+        "id": 506,
+        "name": "Mental Health Counseling",
+        "slug": "mental-health-counseling"
+      },
+      {
+        "id": 507,
+        "name": "Home Nursing",
+        "slug": "home-nursing"
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "category_name": "Events & Entertainment",
+    "slug": "events-entertainment",
+    "icon": "calendar",
+    "subcategories": [
+      {
+        "id": 601,
+        "name": "Event Planning",
+        "slug": "event-planning"
+      },
+      {
+        "id": 602,
+        "name": "Wedding Services",
+        "slug": "wedding-services"
+      },
+      {
+        "id": 603,
+        "name": "Photography & Videography",
+        "slug": "photography-videography"
+      },
+      {
+        "id": 604,
+        "name": "DJs & Musicians",
+        "slug": "djs-musicians"
+      },
+      {
+        "id": 605,
+        "name": "Catering Services",
+        "slug": "catering-services"
+      },
+      {
+        "id": 606,
+        "name": "Decoration Services",
+        "slug": "decoration-services"
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "category_name": "Professional Services",
+    "slug": "professional-services",
+    "icon": "briefcase",
+    "subcategories": [
+      {
+        "id": 701,
+        "name": "Legal Services",
+        "slug": "legal-services"
+      },
+      {
+        "id": 702,
+        "name": "Chartered Accountants",
+        "slug": "chartered-accountants"
+      },
+      {
+        "id": 703,
+        "name": "Tax Consultants",
+        "slug": "tax-consultants"
+      },
+      {
+        "id": 704,
+        "name": "Financial Advisors",
+        "slug": "financial-advisors"
+      },
+      {
+        "id": 705,
+        "name": "Business Consultants",
+        "slug": "business-consultants"
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "category_name": "Personal Services",
+    "slug": "personal-services",
+    "icon": "user",
+    "subcategories": [
+      {
+        "id": 801,
+        "name": "Beauty & Salon",
+        "slug": "beauty-salon"
+      },
+      {
+        "id": 802,
+        "name": "Makeup Artists",
+        "slug": "makeup-artists"
+      },
+      {
+        "id": 803,
+        "name": "Tailoring & Designing",
+        "slug": "tailoring-designing"
+      },
+      {
+        "id": 804,
+        "name": "Laundry & Dry Cleaning",
+        "slug": "laundry-dry-cleaning"
+      },
+      {
+        "id": 805,
+        "name": "Massage Services",
+        "slug": "massage-services"
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "category_name": "Business Services",
+    "slug": "business-services",
+    "icon": "building",
+    "subcategories": [
+      {
+        "id": 901,
+        "name": "Recruitment & HR",
+        "slug": "recruitment-hr"
+      },
+      {
+        "id": 902,
+        "name": "BPO/KPO Services",
+        "slug": "bpo-kpo-services"
+      },
+      {
+        "id": 903,
+        "name": "Logistics",
+        "slug": "logistics"
+      },
+      {
+        "id": 904,
+        "name": "Office Cleaning",
+        "slug": "office-cleaning"
+      },
+      {
+        "id": 905,
+        "name": "Security Services",
+        "slug": "security-services"
+      },
+      {
+        "id": 906,
+        "name": "Printing & Branding",
+        "slug": "printing-branding"
+      }
+    ]
+  },
+  {
+    "id": 10,
+    "category_name": "Logistics & Moving",
+    "slug": "logistics-moving",
+    "icon": "truck",
+    "subcategories": [
+      {
+        "id": 1001,
+        "name": "Packers & Movers",
+        "slug": "packers-movers"
+      },
+      {
+        "id": 1002,
+        "name": "Courier Services",
+        "slug": "courier-services"
+      },
+      {
+        "id": 1003,
+        "name": "Transport Services",
+        "slug": "transport-services"
+      },
+      {
+        "id": 1004,
+        "name": "Warehousing & Storage",
+        "slug": "warehousing-storage"
+      }
+    ]
+  },
+  {
+    "id": 11,
+    "category_name": "Pet Services",
+    "slug": "pet-services",
+    "icon": "paw-print",
+    "subcategories": [
+      {
+        "id": 1101,
+        "name": "Pet Grooming",
+        "slug": "pet-grooming"
+      },
+      {
+        "id": 1102,
+        "name": "Veterinary Services",
+        "slug": "veterinary-services"
+      },
+      {
+        "id": 1103,
+        "name": "Pet Boarding",
+        "slug": "pet-boarding"
+      },
+      {
+        "id": 1104,
+        "name": "Pet Training",
+        "slug": "pet-training"
+      }
+    ]
+  },
+  {
+    "id": 12,
+    "category_name": "Outdoor & Local Services",
+    "slug": "outdoor-local-services",
+    "icon": "tree-pine",
+    "subcategories": [
+      {
+        "id": 1201,
+        "name": "Gardening & Landscaping",
+        "slug": "gardening-landscaping"
+      },
+      {
+        "id": 1202,
+        "name": "Waste Removal",
+        "slug": "waste-removal"
+      },
+      {
+        "id": 1203,
+        "name": "Borewell Services",
+        "slug": "borewell-services"
+      },
+      {
+        "id": 1204,
+        "name": "Farming Assistance",
+        "slug": "farming-assistance"
+      }
+    ]
+  }
+]

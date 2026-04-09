@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+  <head>
+    <title>HireHub API Test</title>
+    <style>
+      body {
+        font-family: Arial;
+        padding: 20px;
+      }
+      .success {
+        color: green;
+      }
+      .error {
+        color: red;
+      }
+      input,
+      button {
+        margin: 10px;
+        padding: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>HireHub API Test</h1>
+
+    <div>
+      <h2>Mobile OTP Test</h2>
+      <input
+        type="text"
+        id="mobile"
+        placeholder="Mobile Number"
+        maxlength="10"
+      />
+      <button onclick="sendOTP()">Send OTP</button>
+      <br />
+      <input type="text" id="otp" placeholder="Enter OTP" maxlength="4" />
+      <button onclick="verifyOTP()">Verify OTP</button>
+      <p id="mobileResult"></p>
+    </div>
+
+    <script>
+      const BACKEND_URL = "http://localhost:5000";
+
+      async function sendOTP() {
+        const mobile = document.getElementById("mobile").value;
+        if (!mobile || mobile.length !== 10) {
+          alert("Please enter 10 digit mobile number");
+          return;
+        }
+
+        try {
+          const response = await fetch(`${BACKEND_URL}/send-mobile-otp`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ mobile }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            document.getElementById("mobileResult").innerHTML =
+              `<span class="success">✅ OTP Sent! Demo OTP: ${data.demoOtp}</span>`;
+            alert(`Demo OTP: ${data.demoOtp} (Check server console also)`);
+          } else {
+            document.getElementById("mobileResult").innerHTML =
+              `<span class="error">❌ Failed: ${data.error}</span>`;
+          }
+        } catch (error) {
+          document.getElementById("mobileResult").innerHTML =
+            `<span class="error">❌ Error: ${error.message}</span>`;
+        }
+      }
+
+      async function verifyOTP() {
+        const mobile = document.getElementById("mobile").value;
+        const otp = document.getElementById("otp").value;
+
+        if (!mobile || !otp) {
+          alert("Please enter mobile and OTP");
+          return;
+        }
+
+        try {
+          const response = await fetch(`${BACKEND_URL}/verify-mobile-otp`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ mobile, otp }),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            document.getElementById("mobileResult").innerHTML =
+              `<span class="success">✅ ${data.message}</span>`;
+          } else {
+            document.getElementById("mobileResult").innerHTML =
+              `<span class="error">❌ ${data.error}</span>`;
+          }
+        } catch (error) {
+          document.getElementById("mobileResult").innerHTML =
+            `<span class="error">❌ Error: ${error.message}</span>`;
+        }
+      }
+    </script>
+  </body>
+</html>
