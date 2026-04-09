@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HIREHUB - Government Registered Service Platform</title>
+    <title>HIREHUB - Verified Service Platform</title>
     <script src="https://cdn.tailwindcss.com/3.4.17"></script>
     <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
@@ -26,7 +26,7 @@
         font-family: "Outfit", sans-serif;
       }
 
-      /* Government Style Header */
+      /* Trusted Style Header */
       .gov-header {
         background: linear-gradient(135deg, #0f2b3d 0%, #1a4a6f 100%);
         border-bottom: 4px solid #ffd700;
@@ -216,7 +216,7 @@
   </head>
   <body>
     <div id="app">
-      <!-- Government Style Header -->
+      <!-- Trusted Style Header -->
       <header class="gov-header fixed top-0 left-0 w-full z-50">
         <div class="max-w-7xl mx-auto px-4 py-3">
           <div class="flex items-center justify-between">
@@ -233,7 +233,7 @@
                 <span class="font-display font-bold text-white text-xl"
                   >HIREHUB</span
                 >
-                <p class="text-yellow-400 text-xs">Government Registered</p>
+                <p class="text-yellow-400 text-xs">Verified Registered</p>
               </div>
             </div>
 
@@ -260,6 +260,14 @@
               </button>
             </div>
 
+            <button
+              onclick="toggleMobileMenu()"
+              class="md:hidden inline-flex items-center justify-center p-2 rounded-lg border border-white/20 text-white hover:bg-white/10 transition"
+              aria-label="Toggle menu"
+            >
+              <i data-lucide="menu" class="w-5 h-5"></i>
+            </button>
+
             <div class="flex items-center gap-3">
               <div id="userInfo" class="hidden text-white text-sm">
                 <span id="userName"></span>
@@ -270,6 +278,13 @@
                   Logout
                 </button>
               </div>
+              <button
+                onclick="toggleKannadaTranslation()"
+                id="translateBtn"
+                class="bg-white text-blue-900 px-4 py-2 rounded-lg font-semibold hover:bg-slate-100 transition"
+              >
+                Kannada
+              </button>
               <button
                 onclick="navigateTo('auth')"
                 id="loginBtn"
@@ -282,6 +297,61 @@
         </div>
       </header>
 
+      <div
+        id="mobileMenu"
+        class="md:hidden hidden bg-blue-900 text-white border-b border-blue-700"
+      >
+        <div class="max-w-7xl mx-auto px-4 py-3 space-y-2">
+          <button
+            onclick="
+              navigateTo('home');
+              toggleMobileMenu();
+            "
+            class="w-full text-left px-4 py-3 rounded-lg hover:bg-blue-800 transition"
+          >
+            Home
+          </button>
+          <button
+            onclick="
+              navigateTo('providers');
+              toggleMobileMenu();
+            "
+            class="w-full text-left px-4 py-3 rounded-lg hover:bg-blue-800 transition"
+          >
+            Service Providers
+          </button>
+          <button
+            id="adminButtonMobile"
+            onclick="
+              showAdminPanel();
+              toggleMobileMenu();
+            "
+            class="w-full text-left px-4 py-3 rounded-lg hover:bg-blue-800 transition hidden"
+          >
+            Admin Portal
+          </button>
+          <button
+            onclick="
+              toggleKannadaTranslation();
+              toggleMobileMenu();
+            "
+            class="w-full text-left px-4 py-3 rounded-lg hover:bg-blue-800 transition"
+          >
+            Kannada
+          </button>
+          <button
+            onclick="
+              navigateTo('auth');
+              toggleMobileMenu();
+            "
+            id="loginBtnMobile"
+            class="w-full text-left px-4 py-3 rounded-lg bg-yellow-400 text-blue-900 font-semibold hover:bg-yellow-300 transition"
+          >
+            Register / Login
+          </button>
+        </div>
+      </div>
+
       <!-- Main Content -->
       <div class="pt-20">
         <!-- Home Page -->
@@ -291,14 +361,16 @@
             class="bg-gradient-to-r from-blue-900 to-blue-800 text-white py-16"
           >
             <div class="max-w-6xl mx-auto text-center px-4">
-              <h1 class="font-display text-5xl font-bold mb-4">
-                Government Registered<br />Service Professionals
+              <h1
+                class="font-display text-3xl sm:text-4xl md:text-5xl font-bold mb-4 leading-tight"
+              >
+                Verified Service Professionals
               </h1>
-              <p class="text-xl mb-8">
+              <p class="text-base sm:text-lg md:text-xl mb-8 max-w-3xl mx-auto">
                 Verified & Trusted Service Providers with Legal Documentation
               </p>
               <div
-                class="max-w-2xl mx-auto bg-white rounded-full p-2 flex gap-2"
+                class="max-w-3xl mx-auto bg-white rounded-full p-3 flex flex-col sm:flex-row gap-3"
               >
                 <input
                   type="text"
@@ -308,7 +380,7 @@
                 />
                 <button
                   onclick="searchServices()"
-                  class="bg-blue-900 text-white px-6 py-2 rounded-full hover:bg-blue-800"
+                  class="bg-blue-900 text-white px-6 py-3 rounded-full hover:bg-blue-800 w-full sm:w-auto"
                 >
                   Search
                 </button>
@@ -351,7 +423,7 @@
           <div class="bg-gray-50 py-12">
             <div class="max-w-7xl mx-auto px-4">
               <h2 class="font-display text-2xl font-bold mb-8">
-                Government Verified Providers
+                Verified Service Providers
               </h2>
               <div
                 class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
@@ -700,9 +772,7 @@
         <div id="adminPage" class="page hidden">
           <div class="max-w-7xl mx-auto px-4 py-8">
             <div class="flex justify-between items-center mb-6">
-              <h1 class="font-display text-3xl font-bold">
-                Government Admin Dashboard
-              </h1>
+              <h1 class="font-display text-3xl font-bold">Admin Dashboard</h1>
               <button onclick="navigateTo('home')" class="text-blue-600">
                 ← Back to Portal
               </button>
@@ -766,6 +836,17 @@
                   </thead>
                   <tbody id="adminUsersList"></tbody>
                 </table>
+              </div>
+            </div>
+
+            <div class="gov-card overflow-hidden mt-8">
+              <div class="px-6 py-4 bg-gray-50 border-b">
+                <h2 class="font-semibold text-lg">Booking Approvals</h2>
+              </div>
+              <div class="overflow-x-auto p-4" id="adminBookingApprovalList">
+                <p class="text-gray-600">
+                  No booking updates awaiting approval.
+                </p>
               </div>
             </div>
           </div>
@@ -835,6 +916,48 @@
                       My Bookings
                     </button>
                   </div>
+                </div>
+
+                <div id="providerSettingsSection" class="gov-card p-6 hidden">
+                  <h3 class="font-semibold mb-4">Provider Settings</h3>
+                  <div class="mb-4">
+                    <p class="text-sm text-gray-600 mb-2">Availability</p>
+                    <button
+                      id="availabilityToggleBtn"
+                      onclick="toggleAvailability()"
+                      class="px-4 py-2 rounded-lg font-semibold text-white bg-green-600 hover:bg-green-700"
+                    >
+                      Available
+                    </button>
+                  </div>
+                  <div class="mb-4">
+                    <label class="block text-sm font-semibold mb-2"
+                      >Service Rate</label
+                    >
+                    <input
+                      id="providerPriceInput"
+                      type="text"
+                      placeholder="Enter your service rate"
+                      class="form-input"
+                    />
+                  </div>
+                  <div class="mb-4">
+                    <label class="block text-sm font-semibold mb-2"
+                      >Service Description</label
+                    >
+                    <textarea
+                      id="providerBioInput"
+                      rows="3"
+                      class="form-input"
+                      placeholder="Update your service summary"
+                    ></textarea>
+                  </div>
+                  <button
+                    onclick="saveProviderSettings()"
+                    class="btn-primary w-full"
+                  >
+                    Save Provider Settings
+                  </button>
                 </div>
               </div>
             </div>
@@ -973,6 +1096,25 @@
         <div id="providerModal" class="modal hidden">
           <div class="modal-content p-6" id="providerModalContent"></div>
         </div>
+
+        <!-- Work Update Modal -->
+        <div id="workUpdateModal" class="modal hidden">
+          <div class="modal-content p-6 max-w-md">
+            <div class="flex justify-between items-center mb-4">
+              <h2
+                id="workUpdateTitle"
+                class="font-display text-xl font-bold"
+              ></h2>
+              <button
+                onclick="closeWorkUpdateModal()"
+                class="text-gray-500 hover:text-gray-700"
+              >
+                &times;
+              </button>
+            </div>
+            <div id="workUpdateBody"></div>
+          </div>
+        </div>
       </div>
 
       <!-- Toast -->
@@ -1017,7 +1159,7 @@
 
     <script>
       // Backend URL
-     const BACKEND_URL = "https://hirehub-backend-pb0j.onrender.com";
+      const BACKEND_URL = "https://hirehub-backend-pb0j.onrender.com";
       // Data Storage
       let users = JSON.parse(localStorage.getItem("gov_users")) || [];
       let providers = [];
@@ -1026,6 +1168,223 @@
         JSON.parse(localStorage.getItem("gov_currentUser")) || null;
       let otpStore = {};
       let authType = "user"; // user or provider
+      let isKannada = false;
+      let mobileMenuOpen = false;
+      let providerUpdates = JSON.parse(
+        localStorage.getItem("gov_provider_updates") || "{}",
+      );
+      let bookingUpdates = JSON.parse(
+        localStorage.getItem("gov_booking_updates") || "{}",
+      );
+      let currentWorkBookingId = null;
+      let currentWorkAction = null;
+
+      function saveProviderUpdates() {
+        localStorage.setItem(
+          "gov_provider_updates",
+          JSON.stringify(providerUpdates),
+        );
+      }
+
+      function saveBookingUpdates() {
+        localStorage.setItem(
+          "gov_booking_updates",
+          JSON.stringify(bookingUpdates),
+        );
+      }
+
+      function getProviderExtraData(providerId) {
+        return (
+          providerUpdates[providerId] || {
+            available: true,
+            price: null,
+            bio: null,
+          }
+        );
+      }
+
+      function mergeProviderExtra(provider) {
+        const id = provider.id || provider._id;
+        const extra = getProviderExtraData(id);
+        return {
+          ...provider,
+          available: extra.available !== undefined ? extra.available : true,
+          price: extra.price || provider.price || "Contact for pricing",
+          bio:
+            extra.bio ||
+            provider.bio ||
+            provider.experience ||
+            "Experienced service professional",
+        };
+      }
+
+      function clearOtpInputs(selector = "#otpSection .otp-input") {
+        document.querySelectorAll(selector).forEach((input) => {
+          input.value = "";
+        });
+      }
+
+      function clearAllOtpInputs() {
+        clearOtpInputs("#otpSection .otp-input");
+        clearOtpInputs("#regOtpSection .otp-input-sm");
+      }
+
+      const kannadaTranslations = {
+        HIREHUB: "ಹೈರ್ನಬ್",
+        Home: "ಮನೆ",
+        "Service Providers": "ಸೇವಾ ಒದಗಿಸುವವರು",
+        "Admin Portal": "ನಿರ್ವಹಣಾ ಪೋರ್ಟಲ್",
+        "Register / Login": "ನೊಂದಾಯಿಸು / ಲಾಗಿನ್",
+        "Verified Registered": "ಮಾನ್ಯತೆಯಾದ ನೋಂದಾಯಿತ",
+        "Verified Service Professionals": "ಮಾನ್ಯತೆಯಾದ ಸೇವಾ ವೃತ್ತಿಪರರು",
+        "Verified Service Categories": "ಮಾನ್ಯತೆಯಾದ ಸೇವಾ ವರ್ಗಗಳು",
+        "Verified Service Providers": "ಮಾನ್ಯತೆಯಾದ ಸೇವಾ ಒದಗಿಸುವವರು",
+        "Verified Providers": "ಮಾನ್ಯತೆಯಾದ ಒದಗಿಸುವವರು",
+        "Admin Dashboard": "ಅಡ್ಮಿನ್ ಡ್ಯಾಸ್ಬೋರ್ಡ್",
+        "Verified Professional": "ಮಾನ್ಯತೆಯಾದ ವೃತ್ತಿಪರ",
+        "ID Verified": "ಐಡಿ ಪ್ರಮಾಣೀಕೃತ",
+        Search: "ಹುಡುಕು",
+        "Search for verified professionals...":
+          "ಮಾನ್ಯತೆಯಾದ ವೃತ್ತಿಪರರನ್ನು ಹುಡುಕಿ...",
+        Call: "ಕರೆ",
+        Book: "ಬುಕ್",
+        Login: "ಲಾಗಿನ್",
+        "Partner Application": "ಸಹಭಾಗಿತ್ವ ಅರ್ಜಿ",
+        "Submit Registration": "ನೊಂದಾವಣೆ ಸಲ್ಲಿಸಿ",
+        "My Profile": "ನನ್ನ ಪ್ರೊಫೈಲ್",
+        "My Bookings": "ನನ್ನ ಬುಕ್ಕಿಂಗ್‌ಗಳು",
+        All: "ಎಲ್ಲಾ",
+        Pending: "ಪ್ರತೀಕ್ಷೆಯಲ್ಲಿ",
+        Confirmed: "ದೃಢೀಕರಿಸಲಾಗಿದೆ",
+        Completed: "ಸಂಪೂರ್ಣವಾಗಿದೆ",
+        "No bookings found": "ಯಾವುದೇ ಬುಕ್ಕಿಂಗ್‌ಗಳು ಕಂಡುಬಂದಿಲ್ಲ",
+        "Book Service": "ಸೇವೆ ಬುಕ್ ಮಾಡಿ",
+        "Service Date": "ಸೇವಾ ದಿನಾಂಕ",
+        "Service Address": "ಸೇವೆ ವಿಳಾಸ",
+        "Your Location": "ನಿಮ್ಮ ಸ್ಥಳ",
+        "Additional Notes (optional)": "ಅದರೊಂದಿಗೆ ಟಿಪ್ಪಣಿಗಳು (ಐಚ್ಛಿಕ)",
+        "Confirm Booking": "ಬುಕ್ಕಿಂಗ್ ಖಚಿತಪಡಿಸಿ",
+        "Leave a Review": "ವಿಮರ್ಶೆ ಬಿಟ್ಟುಳ್ಳಿ",
+        "Provider Dashboard": "ಒದಗಿಸುವವರು ಡ್ಯಾಸ್ಬೋರ್ಡ್",
+        "Total Bookings": "ಒಟ್ಟು ಬುಕ್ಕಿಂಗ್‌ಗಳು",
+        "Avg Rating": "ಸರಾಸರಿ ರೇಟಿಂಗ್",
+        "Total Reviews": "ಒಟ್ಟು ವಿಮರ್ಶೆಗಳು",
+        "Recent Bookings": "ಇತ್ತೀಚಿನ ಬುಕ್ಕಿಂಗ್‌ಗಳು",
+        "My Business Info": "ನನ್ನ ವ್ಯವಹಾರ ಮಾಹಿತಿ",
+        "Create Account": "ಖಾತೆ ಸೃಷ್ಠಿಸಿ",
+        "Continue as": "ಮುಂದುವರೆದು",
+      };
+
+      function escapeRegex(text) {
+        return text.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
+      }
+
+      function translateTextNodes() {
+        const entries = Object.entries(kannadaTranslations).sort(
+          (a, b) => b[0].length - a[0].length,
+        );
+        const walker = document.createTreeWalker(
+          document.body,
+          NodeFilter.SHOW_TEXT,
+          {
+            acceptNode: (node) =>
+              node.nodeValue.trim()
+                ? NodeFilter.FILTER_ACCEPT
+                : NodeFilter.FILTER_REJECT,
+          },
+        );
+
+        while (walker.nextNode()) {
+          const node = walker.currentNode;
+          if (!node.__originalText) node.__originalText = node.nodeValue;
+          let translated = node.__originalText;
+          entries.forEach(([eng, kan]) => {
+            translated = translated.split(eng).join(kan);
+          });
+          node.nodeValue = translated;
+        }
+      }
+
+      function translatePlaceholders() {
+        const entries = Object.entries(kannadaTranslations).sort(
+          (a, b) => b[0].length - a[0].length,
+        );
+        document.querySelectorAll("[placeholder]").forEach((input) => {
+          if (!input.dataset.originalPlaceholder)
+            input.dataset.originalPlaceholder = input.placeholder;
+          let translated = input.dataset.originalPlaceholder;
+          entries.forEach(([eng, kan]) => {
+            translated = translated.split(eng).join(kan);
+          });
+          input.placeholder = translated;
+        });
+      }
+
+      function translateTitle() {
+        if (!document.body.dataset.originalTitle)
+          document.body.dataset.originalTitle = document.title;
+        let translatedTitle = document.body.dataset.originalTitle;
+        Object.entries(kannadaTranslations)
+          .sort((a, b) => b[0].length - a[0].length)
+          .forEach(([eng, kan]) => {
+            translatedTitle = translatedTitle.split(eng).join(kan);
+          });
+        document.title = translatedTitle;
+      }
+
+      function applyKannadaTranslation() {
+        translateTextNodes();
+        translatePlaceholders();
+        translateTitle();
+      }
+
+      function resetTranslation() {
+        const walker = document.createTreeWalker(
+          document.body,
+          NodeFilter.SHOW_TEXT,
+          {
+            acceptNode: (node) =>
+              node.nodeValue.trim()
+                ? NodeFilter.FILTER_ACCEPT
+                : NodeFilter.FILTER_REJECT,
+          },
+        );
+        while (walker.nextNode()) {
+          const node = walker.currentNode;
+          if (node.__originalText) node.nodeValue = node.__originalText;
+        }
+        document.querySelectorAll("[placeholder]").forEach((input) => {
+          if (input.dataset.originalPlaceholder) {
+            input.placeholder = input.dataset.originalPlaceholder;
+          }
+        });
+        if (document.body.dataset.originalTitle) {
+          document.title = document.body.dataset.originalTitle;
+        }
+      }
+
+      function toggleKannadaTranslation() {
+        isKannada = !isKannada;
+        if (isKannada) {
+          applyKannadaTranslation();
+          document.getElementById("translateBtn").textContent = "English";
+        } else {
+          resetTranslation();
+          document.getElementById("translateBtn").textContent = "Kannada";
+        }
+      }
+
+      function toggleMobileMenu() {
+        const menu = document.getElementById("mobileMenu");
+        mobileMenuOpen = !mobileMenuOpen;
+        if (menu) menu.classList.toggle("hidden", !mobileMenuOpen);
+      }
+
+      function closeMobileMenu() {
+        const menu = document.getElementById("mobileMenu");
+        mobileMenuOpen = false;
+        if (menu) menu.classList.add("hidden");
+      }
 
       // Fetch providers from backend
       async function fetchProviders() {
@@ -1037,26 +1396,31 @@
             const approvedPartners = data.data.filter(
               (u) => u.role === "partner" && u.applicationStatus === "approved",
             );
-            providers = approvedPartners.map((partner) => ({
-              id: partner._id,
-              name: partner.name,
-              category: partner.category,
-              experience:
-                partner.documents?.experience || "Verified Professional",
-              rating: 0, // Will be calculated from reviews
-              reviews: 0,
-              phone: partner.mobile,
-              email: partner.email,
-              location: partner.location || "To be updated",
-              lat: partner.lat || null,
-              lng: partner.lng || null,
-              price: "Contact for pricing",
-              aadhaar: partner.documents?.aadhaar || "XXXX-XXXX-XXXX",
-              pan: partner.documents?.pan || "XXXXX0000X",
-              verified: true,
-              bio: `${partner.category} service provider`,
-              open: true,
-            }));
+            providers = approvedPartners.map((partner) => {
+              const extra = getProviderExtraData(partner._id);
+              return {
+                id: partner._id,
+                name: partner.name,
+                category: partner.category,
+                experience:
+                  partner.documents?.experience || "Verified Professional",
+                rating: 0, // Will be calculated from reviews
+                reviews: 0,
+                phone: partner.mobile,
+                email: partner.email,
+                location: partner.location || "To be updated",
+                lat: partner.lat || null,
+                lng: partner.lng || null,
+                price: extra.price || partner.price || "Contact for pricing",
+                aadhaar: partner.documents?.aadhaar || "XXXX-XXXX-XXXX",
+                pan: partner.documents?.pan || "XXXXX0000X",
+                verified: true,
+                available:
+                  extra.available !== undefined ? extra.available : true,
+                bio: extra.bio || `${partner.category} service provider`,
+                open: true,
+              };
+            });
             console.log(
               "✅ Approved providers loaded from backend:",
               providers.length,
@@ -1138,7 +1502,8 @@
             aadhaar: "XXXX-XXXX-1111",
             pan: "ABCDE1234F",
             verified: true,
-            bio: "Government certified carpenter with 15+ years experience",
+            available: true,
+            bio: "Certified carpenter with 15+ years experience",
             open: true,
           },
           {
@@ -1155,6 +1520,7 @@
             aadhaar: "XXXX-XXXX-2222",
             pan: "BCDEF2345G",
             verified: true,
+            available: true,
             bio: "Certified electrician specializing in home and office repairs",
             open: true,
           },
@@ -1172,6 +1538,7 @@
             aadhaar: "XXXX-XXXX-3333",
             pan: "CDEFG3456H",
             verified: true,
+            available: true,
             bio: "Expert in leak repairs, bathroom remodeling and smart plumbing",
             open: true,
           },
@@ -1189,6 +1556,7 @@
             aadhaar: "XXXX-XXXX-4444",
             pan: "DEFGH4567J",
             verified: true,
+            available: true,
             bio: "Interior and exterior painting specialist with premium finishes",
             open: true,
           },
@@ -1206,6 +1574,7 @@
             aadhaar: "XXXX-XXXX-5555",
             pan: "EFGHI5678K",
             verified: true,
+            available: true,
             bio: "Professional driver offering safe city and outstation travel",
             open: true,
           },
@@ -1223,6 +1592,7 @@
             aadhaar: "XXXX-XXXX-6666",
             pan: "FGHIJ6789L",
             verified: true,
+            available: true,
             bio: "Experienced tutor for maths, science and competitive exam coaching",
             open: true,
           },
@@ -1240,6 +1610,7 @@
             aadhaar: "XXXX-XXXX-7777",
             pan: "GHIJK7890M",
             verified: true,
+            available: true,
             bio: "Automobile repair specialist for cars and light commercial vehicles",
             open: true,
           },
@@ -1257,6 +1628,7 @@
             aadhaar: "XXXX-XXXX-8888",
             pan: "HIJKL8901N",
             verified: true,
+            available: true,
             bio: "Reliable home help and cleaning service with verified background",
             open: true,
           },
@@ -1274,6 +1646,7 @@
             aadhaar: "XXXX-XXXX-9999",
             pan: "IJKLM9012O",
             verified: true,
+            available: true,
             bio: "Skilled labour force for construction, moving and assembly jobs",
             open: true,
           },
@@ -1373,6 +1746,7 @@
       }
 
       async function navigateTo(page) {
+        closeMobileMenu();
         document
           .querySelectorAll(".page")
           .forEach((p) => p.classList.add("hidden"));
@@ -1475,7 +1849,7 @@
                 <div class="provider-card cursor-pointer" onclick="viewProvider('${provider.id}')">
                     <div class="h-40 bg-gradient-to-r from-blue-600 to-blue-800 relative">
                         <div class="absolute top-3 right-3">
-                            <span class="verified-icon"><i data-lucide="check-circle" class="w-3 h-3"></i> GOVT VERIFIED</span>
+                            <span class="verified-icon"><i data-lucide="check-circle" class="w-3 h-3"></i> Verified</span>
                         </div>
                         <div class="absolute bottom-3 left-3">
                             <span class="bg-yellow-400 text-blue-900 px-2 py-1 rounded text-xs font-semibold">⭐ ${provider.rating}</span>
@@ -1486,13 +1860,14 @@
                         <p class="text-blue-600 font-semibold mb-2">${provider.category}</p>
                         <p class="text-gray-600 text-sm mb-2">📞 ${provider.phone}</p>
                         <p class="text-gray-600 text-sm mb-2">📍 ${provider.location}</p>
-                        <p class="text-gray-600 font-semibold mb-3">💰 ${provider.price}</p>
+                        <p class="text-gray-600 font-semibold mb-2">💰 ${provider.price}</p>
+                        <p class="text-sm mb-3 ${provider.available ? "text-green-700" : "text-red-700"}">${provider.available ? "Available" : "Unavailable"}</p>
                         <div class="flex gap-2">
                             <button onclick="event.stopPropagation(); contactProvider('${provider.phone}')" class="flex-1 bg-green-600 text-white py-2 rounded-lg text-sm hover:bg-green-700">
                                 <i data-lucide="phone" class="w-4 h-4 inline"></i> Call
                             </button>
-                            <button onclick="event.stopPropagation(); bookService('${provider.id}')" class="flex-1 bg-blue-600 text-white py-2 rounded-lg text-sm hover:bg-blue-700">
-                                <i data-lucide="calendar" class="w-4 h-4 inline"></i> Book
+                            <button onclick="event.stopPropagation(); bookService('${provider.id}')" class="flex-1 ${provider.available ? "bg-blue-600 hover:bg-blue-700 text-white" : "bg-gray-300 text-gray-700 cursor-not-allowed"} py-2 rounded-lg text-sm" ${provider.available ? "" : "disabled"}>
+                                <i data-lucide="calendar" class="w-4 h-4 inline"></i> ${provider.available ? "Book" : "Not Available"}
                             </button>
                         </div>
                     </div>
@@ -1511,7 +1886,8 @@
                     <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">&times;</button>
                 </div>
                 <div class="mb-4">
-                    <span class="verified-icon"><i data-lucide="check-circle" class="w-4 h-4"></i> Government Verified Professional</span>
+                    <span class="verified-icon"><i data-lucide="check-circle" class="w-4 h-4"></i> Verified Professional</span>
+                    <span class="ml-3 inline-flex rounded-full px-2 py-1 text-xs font-semibold ${provider.available ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}">${provider.available ? "Available" : "Unavailable"}</span>
                 </div>
                 <div class="space-y-3">
                     <p><strong>Category:</strong> ${provider.category}</p>
@@ -1520,7 +1896,7 @@
                     <p><strong>Location:</strong> ${provider.location}</p>
                     <p><strong>Pricing:</strong> ${provider.price}</p>
                     <p><strong>About:</strong> ${provider.bio}</p>
-                    <p><strong>Government ID Verified:</strong> ✅ Aadhaar & PAN Verified</p>
+                    <p><strong>ID Verified:</strong> ✅ Aadhaar & PAN Verified</p>
                 </div>
                 <div class="flex gap-3 mt-6">
                     <button onclick="contactProvider('${provider.phone}')" class="flex-1 bg-green-600 text-white py-2 rounded-lg font-semibold text-sm">
@@ -1672,7 +2048,9 @@
             console.log("Demo OTP:", data.demoOtp);
             showToast(`OTP sent: ${data.demoOtp} (Demo)`);
             document.getElementById("otpSection").classList.remove("hidden");
+            clearOtpInputs("#otpSection .otp-input");
             window.pendingLoginMobile = mobile;
+            localStorage.setItem("lastLoginMobile", mobile);
           } else {
             showToast(data.error || "Failed to send OTP", true);
           }
@@ -1752,12 +2130,18 @@
             } else {
               showToast("User not found. Please register first.", true);
             }
+            clearAllOtpInputs();
+            document.getElementById("otpSection").classList.add("hidden");
           } else {
             showToast(data.error || "Invalid OTP", true);
+            clearAllOtpInputs();
+            document.getElementById("otpSection").classList.add("hidden");
           }
         } catch (error) {
           console.error("Verify OTP error:", error);
           showToast("OTP verification failed", true);
+          clearAllOtpInputs();
+          document.getElementById("otpSection").classList.add("hidden");
         }
       }
 
@@ -1783,7 +2167,9 @@
             console.log("Registration Demo OTP:", data.demoOtp);
             showToast(`OTP sent: ${data.demoOtp} (Demo)`);
             document.getElementById("regOtpSection").classList.remove("hidden");
+            clearOtpInputs("#regOtpSection .otp-input-sm");
             window.pendingRegMobile = mobile;
+            localStorage.setItem("lastLoginMobile", mobile);
           } else {
             showToast(data.error || "Failed to send OTP", true);
           }
@@ -1925,6 +2311,10 @@
           .getElementById("registerTab")
           .classList.remove("border-blue-900", "text-blue-900");
         document.getElementById("registerTab").classList.add("text-gray-500");
+        document.getElementById("loginMobile").value =
+          localStorage.getItem("lastLoginMobile") || "";
+        clearAllOtpInputs();
+        document.getElementById("otpSection").classList.add("hidden");
       }
 
       function showRegister() {
@@ -1943,21 +2333,38 @@
           .getElementById("loginTab")
           .classList.remove("border-blue-900", "text-blue-900");
         document.getElementById("loginTab").classList.add("text-gray-500");
+        clearAllOtpInputs();
+        document.getElementById("regOtpSection").classList.add("hidden");
       }
 
       function updateUIForUser() {
         const adminButton = document.getElementById("adminButton");
+        const adminButtonMobile = document.getElementById("adminButtonMobile");
+        const loginBtnMobile = document.getElementById("loginBtnMobile");
         if (currentUser) {
           document.getElementById("userInfo").classList.remove("hidden");
           document.getElementById("userName").textContent = currentUser.name;
           document.getElementById("loginBtn").classList.add("hidden");
+          if (loginBtnMobile) loginBtnMobile.classList.add("hidden");
           if (adminButton) {
             adminButton.style.display =
               currentUser.role === "admin" ? "inline-flex" : "none";
           }
+          if (adminButtonMobile) {
+            adminButtonMobile.classList.toggle(
+              "hidden",
+              currentUser.role !== "admin",
+            );
+          }
         } else {
+          document.getElementById("userInfo").classList.add("hidden");
+          document.getElementById("loginBtn").classList.remove("hidden");
+          if (loginBtnMobile) loginBtnMobile.classList.remove("hidden");
           if (adminButton) {
             adminButton.style.display = "none";
+          }
+          if (adminButtonMobile) {
+            adminButtonMobile.classList.add("hidden");
           }
         }
       }
@@ -2135,6 +2542,37 @@
               `,
             )
             .join("");
+
+          const approvalList = document.getElementById(
+            "adminBookingApprovalList",
+          );
+          if (approvalList) {
+            const pendingApprovals = Object.entries(bookingUpdates)
+              .filter(([, update]) => update.status === "submitted")
+              .map(([bookingId, update]) => ({ bookingId, ...update }));
+
+            if (pendingApprovals.length === 0) {
+              approvalList.innerHTML =
+                '<p class="text-gray-600">No booking updates awaiting approval.</p>';
+            } else {
+              approvalList.innerHTML = pendingApprovals
+                .map(
+                  (approval) => `
+                  <div class="border-b border-gray-200 p-4">
+                    <div class="flex items-center justify-between gap-3">
+                      <div>
+                        <p class="font-semibold">Booking ${approval.bookingId}</p>
+                        <p class="text-sm text-gray-600">Status: Submitted</p>
+                      </div>
+                      <button onclick="approveBookingUpdate('${approval.bookingId}')" class="text-green-600 text-sm">Approve</button>
+                    </div>
+                    ${approval.workSummary ? `<p class="text-sm text-gray-700 mt-2">${approval.workSummary}</p>` : ""}
+                  </div>
+                `,
+                )
+                .join("");
+            }
+          }
         } catch (error) {
           console.error("Load admin data error:", error);
           showToast("Failed to load admin data", true);
@@ -2160,7 +2598,7 @@
               rating: 5.0,
               reviews: 0,
               experience: "New Provider",
-              bio: "Government verified professional",
+              bio: "Verified professional",
               verified: true,
             });
             localStorage.setItem("gov_providers", JSON.stringify(providers));
@@ -2169,6 +2607,23 @@
           showToast("User verified successfully");
           loadAdminData();
         }
+      }
+
+      function approveBookingUpdate(bookingId) {
+        const booking = getBookingUpdate(bookingId);
+        if (!booking) {
+          showToast("Booking update not found", true);
+          return;
+        }
+
+        bookingUpdates[bookingId] = {
+          ...booking,
+          status: "completed",
+          adminApproved: true,
+        };
+        saveBookingUpdates();
+        showToast("Booking update approved");
+        loadAdminData();
       }
 
       async function approveApplication(userId) {
@@ -2227,6 +2682,11 @@
         if (!currentUser) {
           showToast("Please login to book services", true);
           navigateTo("auth");
+          return;
+        }
+        const provider = providers.find((p) => p.id === providerId);
+        if (provider && provider.available === false) {
+          showToast("This provider is currently unavailable", true);
           return;
         }
         createBooking(providerId);
@@ -2289,11 +2749,193 @@
               profile.bookings || 0;
             document.getElementById("statsReviews").textContent =
               profile.reviews || 0;
+
+            renderProviderSettings(profile);
           }
         } catch (error) {
           console.error("Load profile error:", error);
           showToast("Failed to load profile", true);
         }
+      }
+
+      function renderProviderSettings(profile) {
+        const settingsSection = document.getElementById(
+          "providerSettingsSection",
+        );
+        if (!settingsSection) return;
+
+        if (currentUser?.role === "partner") {
+          const providerData = getProviderExtraData(currentUser.id);
+          settingsSection.classList.remove("hidden");
+          document.getElementById("availabilityToggleBtn").textContent =
+            providerData.available ? "Available" : "Unavailable";
+          document.getElementById("availabilityToggleBtn").className =
+            providerData.available
+              ? "px-4 py-2 rounded-lg font-semibold text-white bg-green-600 hover:bg-green-700"
+              : "px-4 py-2 rounded-lg font-semibold text-white bg-red-600 hover:bg-red-700";
+          document.getElementById("providerPriceInput").value =
+            providerData.price || profile.price || "";
+          document.getElementById("providerBioInput").value =
+            providerData.bio || profile.bio || profile.experience || "";
+        } else {
+          settingsSection.classList.add("hidden");
+        }
+      }
+
+      function toggleAvailability() {
+        if (!currentUser || currentUser.role !== "partner") return;
+        const providerId = currentUser.id;
+        const current = getProviderExtraData(providerId);
+        const next = !current.available;
+        providerUpdates[providerId] = {
+          ...current,
+          available: next,
+          price: current.price || "",
+          bio: current.bio || "",
+        };
+        saveProviderUpdates();
+        renderProviderSettings(currentUser);
+        fetchProviders();
+        showToast(
+          `Availability updated to ${next ? "Available" : "Unavailable"}`,
+        );
+      }
+
+      function saveProviderSettings() {
+        if (!currentUser || currentUser.role !== "partner") {
+          showToast("Provider settings only available for partners", true);
+          return;
+        }
+
+        const providerId = currentUser.id;
+        const current = getProviderExtraData(providerId);
+        const price = document
+          .getElementById("providerPriceInput")
+          .value.trim();
+        const bio = document.getElementById("providerBioInput").value.trim();
+
+        providerUpdates[providerId] = {
+          ...current,
+          price: price || current.price || "Contact for pricing",
+          bio:
+            bio ||
+            current.bio ||
+            current.bio ||
+            "Experienced service professional",
+          available: current.available !== undefined ? current.available : true,
+        };
+        saveProviderUpdates();
+        fetchProviders();
+        renderProviderSettings(currentUser);
+        showToast("Provider settings saved successfully");
+      }
+
+      function getBookingUpdate(bookingId) {
+        return bookingUpdates[bookingId] || {};
+      }
+
+      function getBookingWithUpdate(booking) {
+        if (!booking) return booking;
+        const update = getBookingUpdate(
+          booking.id || booking._id || booking.bookingId,
+        );
+        return {
+          ...booking,
+          status: update.status || booking.status,
+          startPhoto: update.startPhoto || booking.startPhoto,
+          endPhoto: update.endPhoto || booking.endPhoto,
+          workSummary: update.workSummary || booking.workSummary,
+          adminApproved: update.adminApproved || booking.adminApproved,
+        };
+      }
+
+      function openWorkUpdateModal(bookingId, action) {
+        currentWorkBookingId = bookingId;
+        currentWorkAction = action;
+        const modal = document.getElementById("workUpdateModal");
+        const title = action === "start" ? "Start Work" : "Complete Work";
+        const body = document.getElementById("workUpdateBody");
+        const update = getBookingUpdate(bookingId);
+        const summary = update.workSummary || "";
+        const photoLabel =
+          action === "start"
+            ? "Upload start-of-work photo"
+            : "Upload end-of-work photo";
+        const photoId = action === "start" ? "workStartPhoto" : "workEndPhoto";
+
+        body.innerHTML = `
+          <div class="space-y-4">
+            <p class="text-sm text-gray-600">Please upload the required photo and add a short work note.</p>
+            <div>
+              <label class="block text-sm font-semibold mb-2">${photoLabel}</label>
+              <input type="file" id="${photoId}" accept="image/*" class="form-input" />
+            </div>
+            <div>
+              <label class="block text-sm font-semibold mb-2">Work Summary</label>
+              <textarea id="workUpdateSummary" class="form-input" rows="4" placeholder="Briefly describe the work progress">${summary}</textarea>
+            </div>
+            <button onclick="submitWorkUpdate()" class="btn-primary w-full">Submit</button>
+          </div>
+        `;
+
+        document.getElementById("workUpdateTitle").textContent = title;
+        modal.classList.remove("hidden");
+      }
+
+      function closeWorkUpdateModal() {
+        document.getElementById("workUpdateModal").classList.add("hidden");
+      }
+
+      async function submitWorkUpdate() {
+        if (!currentWorkBookingId || !currentWorkAction) return;
+
+        const inputId =
+          currentWorkAction === "start" ? "workStartPhoto" : "workEndPhoto";
+        const fileInput = document.getElementById(inputId);
+        const summary = document
+          .getElementById("workUpdateSummary")
+          .value.trim();
+
+        if (!fileInput?.files?.length) {
+          showToast("Please upload the required photo", true);
+          return;
+        }
+
+        const file = fileInput.files[0];
+        const photoData = await new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+
+        const current = getBookingUpdate(currentWorkBookingId);
+        const nextStatus =
+          currentWorkAction === "start" ? "in_progress" : "submitted";
+
+        bookingUpdates[currentWorkBookingId] = {
+          ...current,
+          status: nextStatus,
+          workSummary: summary || current.workSummary || "",
+          adminApproved: current.adminApproved || false,
+          startPhoto:
+            currentWorkAction === "start"
+              ? photoData
+              : current.startPhoto || "",
+          endPhoto:
+            currentWorkAction === "complete"
+              ? photoData
+              : current.endPhoto || "",
+        };
+        saveBookingUpdates();
+        closeWorkUpdateModal();
+        fetchProviders();
+        loadProviderDashboard();
+        showToast(
+          currentWorkAction === "start"
+            ? "Work started. Keep updating until completion."
+            : "Work submitted for admin approval.",
+        );
       }
 
       // =========================
@@ -2315,7 +2957,9 @@
           const data = await response.json();
 
           if (data.success) {
-            window.userBookings = enrichBookingsWithDistance(data.data || []);
+            window.userBookings = enrichBookingsWithDistance(
+              (data.data || []).map(getBookingWithUpdate),
+            );
             renderBookings();
           }
         } catch (error) {
@@ -2362,9 +3006,12 @@
                 </span>
               </div>
               <p class="text-gray-600 mb-4">${booking.address || "Service location"}</p>
-              <div class="flex gap-2">
-                ${booking.status === "pending" ? `<button onclick="cancelBooking('${booking.id}')" class="text-sm text-red-600">Cancel</button>` : ""}
+              ${booking.workSummary ? `<p class="text-gray-600 mb-2"><strong>Work note:</strong> ${booking.workSummary}</p>` : ""}
+              <div class="flex gap-2 flex-wrap">
+                ${booking.status === "pending" ? `<button onclick="cancelBooking('${booking.id || booking._id || booking.bookingId}')" class="text-sm text-red-600">Cancel</button>` : ""}
                 ${booking.status === "completed" ? `<button onclick="openReviewModal('${booking.businessId}')" class="text-sm text-blue-600">Leave Review</button>` : ""}
+                ${booking.status === "in_progress" ? `<span class="text-sm text-orange-700">Work in progress</span>` : ""}
+                ${booking.status === "submitted" ? `<span class="text-sm text-purple-700">Submitted for approval</span>` : ""}
               </div>
             </div>
           `,
@@ -2579,7 +3226,7 @@
             `${BACKEND_URL}/api/bookings/user/${currentUser.id}`,
           );
           const data = await response.json();
-          const providerBookings = data.data || [];
+          const providerBookings = (data.data || []).map(getBookingWithUpdate);
 
           document.getElementById("providerBookings").textContent =
             providerBookings.length;
@@ -2598,21 +3245,42 @@
 
             providerBookingsList.innerHTML = providerBookings
               .slice(0, 5)
-              .map(
-                (b) => `
-              <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
-                <div>
-                  <p class="font-semibold">${b.business?.name || "Service"}</p>
-                  <p class="text-sm text-gray-600">${new Date(b.serviceDate).toLocaleDateString()}</p>
-                </div>
-                <span class="text-sm font-semibold px-2 py-1 rounded ${
-                  b.status === "completed"
-                    ? "bg-green-100 text-green-800"
-                    : "bg-yellow-100 text-yellow-800"
-                }">${b.status}</span>
-              </div>
-            `,
-              )
+              .map((b) => {
+                const bookingId = b.id || b._id || b.bookingId;
+                const actionButton =
+                  b.status === "pending"
+                    ? `<button onclick="openWorkUpdateModal('${bookingId}', 'start')" class="text-sm text-blue-600">Start Work</button>`
+                    : b.status === "in_progress"
+                      ? `<button onclick="openWorkUpdateModal('${bookingId}', 'complete')" class="text-sm text-blue-600">Complete Work</button>`
+                      : b.status === "submitted"
+                        ? `<span class="text-sm text-orange-700">Awaiting admin approval</span>`
+                        : `<span class="text-sm text-green-700">Completed</span>`;
+
+                return `
+                  <div class="flex flex-col gap-3 p-4 bg-gray-50 rounded">
+                    <div class="flex items-start justify-between gap-4">
+                      <div>
+                        <p class="font-semibold">${b.business?.name || "Service"}</p>
+                        <p class="text-sm text-gray-600">${new Date(b.serviceDate).toLocaleDateString()}</p>
+                      </div>
+                      <span class="text-sm font-semibold px-2 py-1 rounded ${
+                        b.status === "completed"
+                          ? "bg-green-100 text-green-800"
+                          : b.status === "submitted"
+                            ? "bg-orange-100 text-orange-800"
+                            : b.status === "in_progress"
+                              ? "bg-blue-100 text-blue-800"
+                              : "bg-yellow-100 text-yellow-800"
+                      }">${b.status}</span>
+                    </div>
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                      <p class="text-sm text-gray-600">${b.address || "Service address"}</p>
+                      <div class="flex gap-2">${actionButton}</div>
+                    </div>
+                    ${b.workSummary ? `<p class="text-sm text-gray-700">Summary: ${b.workSummary}</p>` : ""}
+                  </div>
+                `;
+              })
               .join("");
           }
         } catch (error) {
