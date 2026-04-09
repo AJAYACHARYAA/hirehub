@@ -370,17 +370,17 @@
                 Verified & Trusted Service Providers with Legal Documentation
               </p>
               <div
-                class="max-w-3xl mx-auto bg-white rounded-full p-3 flex flex-col sm:flex-row gap-3"
+                class="max-w-3xl mx-auto bg-white rounded-full p-3 flex flex-col sm:flex-row gap-2 items-stretch"
               >
                 <input
                   type="text"
                   id="homeSearch"
                   placeholder="Search for verified professionals..."
-                  class="flex-1 px-4 py-3 text-gray-800 rounded-full outline-none"
+                  class="flex-1 min-w-0 px-4 py-3 text-gray-800 rounded-full outline-none"
                 />
                 <button
                   onclick="searchServices()"
-                  class="bg-blue-900 text-white px-6 py-3 rounded-full hover:bg-blue-800 w-full sm:w-auto"
+                  class="bg-blue-900 text-white px-4 py-3 rounded-full hover:bg-blue-800 w-full sm:w-auto sm:min-w-[140px]"
                 >
                   Search
                 </button>
@@ -1159,7 +1159,7 @@
 
     <script>
       // Backend URL
-      const BACKEND_URL = "https://hirehub-backend-pb0j.onrender.com";
+      const BACKEND_URL = "https://hirehub-wu67.onrender.com";
       // Data Storage
       let users = JSON.parse(localStorage.getItem("gov_users")) || [];
       let providers = [];
@@ -2044,7 +2044,7 @@
 
           const data = await response.json();
 
-          if (data.success) {
+          if (response.ok && data.success) {
             console.log("Demo OTP:", data.demoOtp);
             showToast(`OTP sent: ${data.demoOtp} (Demo)`);
             document.getElementById("otpSection").classList.remove("hidden");
@@ -2052,11 +2052,18 @@
             window.pendingLoginMobile = mobile;
             localStorage.setItem("lastLoginMobile", mobile);
           } else {
-            showToast(data.error || "Failed to send OTP", true);
+            const errorMessage =
+              data.error ||
+              data.message ||
+              `Failed to send OTP (${response.status})`;
+            showToast(errorMessage, true);
           }
         } catch (error) {
           console.error("Send OTP error:", error);
-          showToast("Failed to send OTP", true);
+          const message = error.message.includes("Failed to fetch")
+            ? "Cannot reach OTP server. Check your backend or network."
+            : `Failed to send OTP: ${error.message}`;
+          showToast(message, true);
         }
       }
 
@@ -2163,7 +2170,7 @@
 
           const data = await response.json();
 
-          if (data.success) {
+          if (response.ok && data.success) {
             console.log("Registration Demo OTP:", data.demoOtp);
             showToast(`OTP sent: ${data.demoOtp} (Demo)`);
             document.getElementById("regOtpSection").classList.remove("hidden");
@@ -2171,11 +2178,18 @@
             window.pendingRegMobile = mobile;
             localStorage.setItem("lastLoginMobile", mobile);
           } else {
-            showToast(data.error || "Failed to send OTP", true);
+            const errorMessage =
+              data.error ||
+              data.message ||
+              `Failed to send OTP (${response.status})`;
+            showToast(errorMessage, true);
           }
         } catch (error) {
           console.error("Send registration OTP error:", error);
-          showToast("Failed to send OTP", true);
+          const message = error.message.includes("Failed to fetch")
+            ? "Cannot reach OTP server. Check your backend or network."
+            : `Failed to send OTP: ${error.message}`;
+          showToast(message, true);
         }
       }
 
