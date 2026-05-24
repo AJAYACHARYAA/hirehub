@@ -57,7 +57,7 @@ const userSchema = new mongoose.Schema({
 });
 
 const User = mongoose.model('User', userSchema);
-const ADMIN_MOBILE = process.env.ADMIN_MOBILE || '9999999999';
+const ADMIN_MOBILE = process.env.ADMIN_MOBILE || '1234567890';
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@hirehub.com';
 
 // OTP Store (in-memory)
