@@ -57,9 +57,35 @@ const userSchema = new mongoose.Schema({
 });
 
 const User = mongoose.model('User', userSchema);
-const ADMIN_MOBILE = process.env.ADMIN_MOBILE || '9999999999';
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@hirehub.com';
 
+const ADMIN_MOBILE = process.env.ADMIN_MOBILE || "9999999999";
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "admin@hirehub.com";
+
+// =========================
+// CREATE DEFAULT ADMIN
+// =========================
+mongoose.connection.once("open", async () => {
+  try {
+    console.log("🔍 Checking admin account...");
+
+    let admin = await User.findOne({ mobile: ADMIN_MOBILE });
+
+    if (!admin) {
+      admin = await User.create({
+        name: "Admin",
+        mobile: ADMIN_MOBILE,
+        email: ADMIN_EMAIL,
+        role: "admin",
+      });
+
+      console.log("✅ Default admin created");
+    } else {
+      console.log("✅ Admin already exists");
+    }
+  } catch (err) {
+    console.log("❌ Admin creation failed:", err.message);
+  }
+});
 // OTP Store (in-memory)
 const otpStore = new Map();
 
