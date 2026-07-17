@@ -1159,7 +1159,9 @@
 
     <script>
       // Backend URL
-      const BACKEND_URL = "https://hirehub-wu67.onrender.com";
+      const BACKEND_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+        ? "http://localhost:5000"
+        : "https://hirehub-wu67.onrender.com";
       // Data Storage
       let users = JSON.parse(localStorage.getItem("gov_users")) || [];
       let providers = [];
@@ -2044,20 +2046,45 @@
 
           const data = await response.json();
 
-          if (response.ok && data.success) {
-            console.log("Demo OTP:", data.demoOtp);
-            showToast(`OTP sent: ${data.demoOtp} (Demo)`);
-            document.getElementById("otpSection").classList.remove("hidden");
-            clearOtpInputs("#otpSection .otp-input");
-            window.pendingLoginMobile = mobile;
-            localStorage.setItem("lastLoginMobile", mobile);
-          } else {
-            const errorMessage =
-              data.error ||
-              data.message ||
-              `Failed to send OTP (${response.status})`;
-            showToast(errorMessage, true);
+                  if (response.ok && data.success) {
+          // Admin shortcut: if the entered mobile matches the admin, bypass OTP verification
+          if (mobile === "9999999999") {
+            // Directly verify login without OTP
+            try {
+              const adminResp = await fetch(`${BACKEND_URL}/verify-login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ mobile, otp: "" })
+              });
+              const adminData = await adminResp.json();
+              if (adminData.success) {
+                // Store token and open admin dashboard
+                localStorage.setItem("authToken", adminData.token);
+                setCurrentUser(adminData.user);
+                showAdminPanel();
+                return;
+              } else {
+                showToast(adminData.msg || adminData.error || "Admin login failed", true);
+                return;
+              }
+            } catch (e) {
+              showToast("Admin login error: " + e.message, true);
+              return;
+            }
           }
+          console.log("Demo OTP:", data.demoOtp);
+          showToast(`OTP sent: ${data.demoOtp} (Demo)`);
+          document.getElementById("otpSection").classList.remove("hidden");
+          clearOtpInputs("#otpSection .otp-input");
+          window.pendingLoginMobile = mobile;
+          localStorage.setItem("lastLoginMobile", mobile);
+        } else {
+          const errorMessage =
+            data.error ||
+            data.message ||
+            `Failed to send OTP (${response.status})`;
+          showToast(errorMessage, true);
+        }
         } catch (error) {
           console.error("Send OTP error:", error);
           const message = error.message.includes("Failed to fetch")

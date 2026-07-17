@@ -178,6 +178,104 @@ app.post("/verify-mobile-otp", (req, res) => {
 });
 
 // =========================
+// VERIFY LOGIN (ADMIN BYPASS & REGULAR OTP)
+// =========================
+app.post("/verify-login", async (req, res) => {
+  const { mobile, email, otp, name } = req.body;
+
+  console.log("🔑 verify-login request for mobile:", mobile, "email:", email);
+
+  // Admin shortcut check
+  if (mobile === ADMIN_MOBILE) {
+    console.log("👑 Admin shortcut triggered for", mobile);
+    
+    // In DB mode, retrieve or create the admin user
+    if (mongoose.connection.readyState === 1) {
+      try {
+        let adminUser = await User.findOne({ mobile: ADMIN_MOBILE, role: 'admin' });
+        if (!adminUser) {
+          adminUser = await User.create({
+            name: "Admin",
+            mobile: ADMIN_MOBILE,
+            email: ADMIN_EMAIL || "admin@hirehub.com",
+            role: "admin",
+          });
+          console.log("✅ Default admin created in database");
+        }
+        
+        // Generate JWT token if needed
+        let token = "admin-token";
+        try {
+          const jwt = require("jsonwebtoken");
+          token = jwt.sign({ id: adminUser._id, role: 'admin' }, process.env.JWT_SECRET || "your_super_secret_jwt_key_hirehub_2025");
+        } catch (jwtErr) {
+          console.warn("⚠️ jsonwebtoken package not loaded or failed:", jwtErr.message);
+        }
+        
+        return res.json({ success: true, token, user: adminUser });
+      } catch (err) {
+        console.error("❌ Admin DB operation failed, falling back to demo response:", err.message);
+      }
+    }
+
+    // Demo/Fallback Mode
+    return res.json({
+      success: true,
+      token: "demo-admin-token-12345",
+      user: {
+        id: "admin_demo_id",
+        name: "Admin (Demo)",
+        mobile: ADMIN_MOBILE,
+        email: ADMIN_EMAIL || "admin@hirehub.com",
+        role: "admin"
+      },
+      isDemo: true
+    });
+  }
+
+  // Regular OTP Verification/Login path via verify-login
+  const key = mobile || email;
+  const stored = otpStore.get(key);
+  
+  if (stored && stored.otp === otp) {
+    otpStore.delete(key);
+    
+    if (mongoose.connection.readyState === 1) {
+      try {
+        let user = await User.findOne({ $or: [{ mobile }, { email }] });
+        if (!user) {
+          user = await User.create({ name: name || "User", mobile, email });
+        }
+        let token = "user-token";
+        try {
+          const jwt = require("jsonwebtoken");
+          token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET || "your_super_secret_jwt_key_hirehub_2025");
+        } catch (jwtErr) {}
+        return res.json({ success: true, token, user });
+      } catch (err) {
+        console.error("❌ Regular user DB operation failed:", err.message);
+      }
+    }
+
+    // Demo Mode for regular user
+    return res.json({
+      success: true,
+      token: "demo-user-token",
+      user: {
+        id: `guest_${key}`,
+        name: name || `User ${key}`,
+        mobile: mobile || "",
+        email: email || "",
+        role: "user"
+      },
+      isDemo: true
+    });
+  } else {
+    return res.json({ success: false, msg: "Invalid OTP" });
+  }
+});
+
+// =========================
 // SEND EMAIL OTP
 // =========================
 app.post("/send-email-otp", (req, res) => {

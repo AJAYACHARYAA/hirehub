@@ -16,7 +16,10 @@
     "helmet": "^7.2.0",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^7.8.9",
+    "next": "^16.2.6",
     "nodemailer": "^6.10.1",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
     "socket.io": "^4.8.3",
     "twilio": "^4.23.0"
   },
