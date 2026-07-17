@@ -21,11 +21,13 @@ app.use(express.json());
 // MongoDB Connection String (from your .env)
 const MONGODB_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/hirehub';
 
-// Connect to MongoDB with timeout
+// Connect to MongoDB with generous timeouts for Atlas
 mongoose.connect(MONGODB_URI, {
-  serverSelectionTimeoutMS: 5000, // 5 second timeout
-  socketTimeoutMS: 5000,
-  connectTimeoutMS: 5000
+  serverSelectionTimeoutMS: 30000, // 30 second timeout for Atlas
+  socketTimeoutMS: 45000,
+  connectTimeoutMS: 30000,
+  maxPoolSize: 10,
+  retryWrites: true
 })
   .then(() => {
     console.log('✅ MongoDB Connected Successfully!');
@@ -244,7 +246,15 @@ app.post("/verify-login", async (req, res) => {
       try {
         let user = await User.findOne({ $or: [{ mobile }, { email }] });
         if (!user) {
-          user = await User.create({ name: name || "User", mobile, email });
+          // Auto-create user in MongoDB on first login
+          const userData = {
+            name: name || `User_${mobile || email}`,
+            mobile: mobile || `email_${Date.now()}`,
+            email: email || `${mobile}@hirehub.local`,
+            role: 'user'
+          };
+          user = await User.create(userData);
+          console.log(`✅ New user auto-created in MongoDB: ${user.name} (${user.mobile})`);
         }
         let token = "user-token";
         try {
@@ -461,14 +471,16 @@ app.get("/api/users", async (req, res) => {
 app.get("/api/admin/users", verifyAdminRequest, async (req, res) => {
   try {
     if (mongoose.connection.readyState === 1) {
-      const users = await User.find().sort({ createdAt: -1 });
-      res.json({ success: true, data: users });
+      const users = await User.find().sort({ createdAt: -1 }).lean();
+      console.log(`📋 Admin fetched ${users.length} users from MongoDB`);
+      res.json({ success: true, data: users, total: users.length, source: 'mongodb' });
     } else {
-      res.json({ success: true, data: demoUsers, isDemo: true, message: "Database unavailable - Demo mode" });
+      console.warn('⚠️ MongoDB not connected, returning demo users');
+      res.json({ success: true, data: demoUsers, isDemo: true, source: 'demo', message: "Database unavailable - Demo mode" });
     }
   } catch (error) {
     console.error("Get admin users error:", error.message);
-    res.json({ success: true, data: demoUsers, isDemo: true, message: "Database unavailable - Demo mode" });
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
@@ -478,14 +490,16 @@ app.get("/api/admin/users", verifyAdminRequest, async (req, res) => {
 app.get("/api/users/check-mobile/:mobile", async (req, res) => {
   try {
     const mobile = req.params.mobile;
+    // Admin mobile always exists
+    if (mobile === ADMIN_MOBILE) {
+      return res.json({ success: true, exists: true });
+    }
     if (mongoose.connection.readyState === 1) {
       const user = await User.findOne({ mobile });
-      const exists = !!user || mobile === ADMIN_MOBILE;
-      res.json({ success: true, exists });
+      res.json({ success: true, exists: !!user });
     } else {
-      // Demo mode - allow admin and existing mobile lookups
-      const exists = mobile === ADMIN_MOBILE || true;
-      res.json({ success: true, exists, isDemo: true });
+      // Demo mode - can't verify, allow through
+      res.json({ success: true, exists: true, isDemo: true });
     }
   } catch (error) {
     console.error("Check mobile error:", error.message);
