@@ -446,12 +446,12 @@ app.get("/api/users", async (req, res) => {
       const users = await User.find().sort({ createdAt: -1 });
       res.json({ success: true, data: users });
     } else {
-      // Demo mode - return empty array
-      res.json({ success: true, data: [], isDemo: true, message: "Database unavailable - Demo mode" });
+      // Demo mode - return demo users
+      res.json({ success: true, data: demoUsers, isDemo: true, message: "Database unavailable - Demo mode" });
     }
   } catch (error) {
     console.error("Get users error:", error.message);
-    res.json({ success: true, data: [], isDemo: true, message: "Database unavailable - Demo mode" });
+    res.json({ success: true, data: demoUsers, isDemo: true, message: "Database unavailable - Demo mode" });
   }
 });
 
@@ -464,11 +464,11 @@ app.get("/api/admin/users", verifyAdminRequest, async (req, res) => {
       const users = await User.find().sort({ createdAt: -1 });
       res.json({ success: true, data: users });
     } else {
-      res.json({ success: true, data: [], isDemo: true, message: "Database unavailable - Demo mode" });
+      res.json({ success: true, data: demoUsers, isDemo: true, message: "Database unavailable - Demo mode" });
     }
   } catch (error) {
     console.error("Get admin users error:", error.message);
-    res.json({ success: true, data: [], isDemo: true, message: "Database unavailable - Demo mode" });
+    res.json({ success: true, data: demoUsers, isDemo: true, message: "Database unavailable - Demo mode" });
   }
 });
 
@@ -538,9 +538,28 @@ app.get("/api/businesses/:id", (req, res) => {
 // =========================
 // BOOKINGS STORAGE (In-memory for demo)
 // =========================
-let bookings = [];
-let reviews = [];
+let demoUsers = [
+  { _id: "user_demo_1", name: "Rahul Sharma", mobile: "9876543210", email: "rahul@gmail.com", role: "user", location: "Mumbai", createdAt: new Date(Date.now() - 5*86400000) },
+  { _id: "user_demo_2", name: "Priya Patel", mobile: "8765432109", email: "priya@gmail.com", role: "user", location: "Delhi", createdAt: new Date(Date.now() - 4*86400000) },
+  { _id: "user_demo_3", name: "Amit Kumar", mobile: "7654321098", email: "amit@gmail.com", role: "partner", category: "Plumbers", applicationStatus: "approved", location: "Bangalore", createdAt: new Date(Date.now() - 10*86400000) },
+  { _id: "user_demo_4", name: "Sneha Reddy", mobile: "6543210987", email: "sneha@gmail.com", role: "partner", category: "Electricians", applicationStatus: "pending", location: "Chennai", documents: { aadhaar: "aadhaar_sample.pdf", pan: "pan_sample.pdf", experience: "3 years" }, createdAt: new Date(Date.now() - 2*86400000) },
+  { _id: "user_demo_5", name: "Vikram Singh", mobile: "5432109876", email: "vikram@gmail.com", role: "partner", category: "Carpenters", applicationStatus: "pending", location: "Kolkata", documents: { aadhaar: "aadhaar_v.pdf", pan: "pan_v.pdf", experience: "5 years" }, createdAt: new Date(Date.now() - 1*86400000) },
+  { _id: "user_demo_6", name: "Ananya Sen", mobile: "9999999999", email: "admin@hirehub.com", role: "admin", location: "Mumbai", createdAt: new Date(Date.now() - 30*86400000) }
+];
+
+let bookings = [
+  { id: "b1", userId: "user_demo_1", businessId: "1", serviceDate: "2026-07-20", address: "Flat 402, Sea Breeze, Mumbai", notes: "Leaking tap in kitchen", amount: 450, status: "pending", createdAt: new Date(Date.now() - 1*86400000).toISOString(), updatedAt: new Date(Date.now() - 1*86400000).toISOString() },
+  { id: "b2", userId: "user_demo_2", businessId: "2", serviceDate: "2026-07-18", address: "H-12, Rajouri Garden, Delhi", notes: "Short circuit in living room", amount: 600, status: "confirmed", createdAt: new Date(Date.now() - 2*86400000).toISOString(), updatedAt: new Date(Date.now() - 2*86400000).toISOString() },
+  { id: "b3", userId: "user_demo_1", businessId: "4", serviceDate: "2026-07-15", address: "Flat 402, Sea Breeze, Mumbai", notes: "Stitching formal suit", amount: 1500, status: "completed", createdAt: new Date(Date.now() - 5*86400000).toISOString(), updatedAt: new Date(Date.now() - 4*86400000).toISOString() }
+];
+
+let reviews = [
+  { id: "r1", userId: "user_demo_1", businessId: "1", rating: 5, comment: "Excellent service! Fixed the leak in 10 minutes.", createdAt: new Date(Date.now() - 4*86400000).toISOString() },
+  { id: "r2", userId: "user_demo_2", businessId: "2", rating: 4, comment: "Very professional electrician, solved the issue quickly.", createdAt: new Date(Date.now() - 1*86400000).toISOString() }
+];
+
 let userProfiles = {};
+
 
 // =========================
 // CREATE BOOKING
@@ -605,7 +624,7 @@ app.get("/api/bookings/user/:userId", async (req, res) => {
     const enrichedBookings = await Promise.all(
       userBookings.map(async (booking) => {
         let business = businesses.find((b) => b.id === parseInt(booking.businessId));
-        if (!business && mongoose.connection.readyState === 1) {
+        if (!business && mongoose.connection.readyState === 1 && mongoose.Types.ObjectId.isValid(booking.businessId)) {
           const provider = await User.findById(booking.businessId);
           if (provider && provider.role === 'partner') {
             business = {
@@ -841,7 +860,34 @@ app.put("/api/users/:userId/approve", verifyAdminRequest, async (req, res) => {
       console.log(`✅ Partner application approved for user ${user._id}`);
       res.json({ success: true, message: "Partner application approved", user });
     } else {
-      res.json({ success: true, message: "Partner application approved (Demo Mode)", isDemo: true });
+      const user = demoUsers.find(u => u._id === req.params.userId);
+      if (user) {
+        user.applicationStatus = 'approved';
+        user.role = 'partner';
+        // Add to businesses if category is present
+        if (user.category) {
+          const newBusiness = {
+            id: Math.max(...businesses.map(b => b.id), 0) + 1,
+            ownerId: user._id,
+            name: user.name,
+            category: user.category,
+            phone: user.mobile,
+            email: user.email,
+            address: user.location || "To be updated",
+            city: user.location || "To be updated",
+            location: user.location || "To be updated",
+            lat: user.lat || null,
+            lng: user.lng || null,
+            price: "Contact for pricing",
+            description: `${user.category} service provider`,
+            rating: 0,
+            reviews: 0,
+            open: true
+          };
+          businesses.push(newBusiness);
+        }
+      }
+      res.json({ success: true, message: "Partner application approved (Demo Mode)", user, isDemo: true });
     }
   } catch (error) {
     console.error("Approve partner error:", error.message);
@@ -868,10 +914,187 @@ app.put("/api/users/:userId/reject", verifyAdminRequest, async (req, res) => {
       console.log(`❌ Partner application rejected for user ${user._id}`);
       res.json({ success: true, message: "Partner application rejected", user });
     } else {
-      res.json({ success: true, message: "Partner application rejected (Demo Mode)", isDemo: true });
+      const user = demoUsers.find(u => u._id === req.params.userId);
+      if (user) {
+        user.applicationStatus = 'rejected';
+      }
+      res.json({ success: true, message: "Partner application rejected (Demo Mode)", user, isDemo: true });
     }
   } catch (error) {
     console.error("Reject partner error:", error.message);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// =========================
+// GET ADMIN PORTAL STATS
+// =========================
+app.get("/api/admin/stats", verifyAdminRequest, async (req, res) => {
+  try {
+    let userCount = 0;
+    let partnerCount = 0;
+    let pendingPartnersCount = 0;
+    
+    if (mongoose.connection.readyState === 1) {
+      userCount = await User.countDocuments({ role: 'user' });
+      partnerCount = await User.countDocuments({ role: 'partner', applicationStatus: 'approved' });
+      pendingPartnersCount = await User.countDocuments({ role: 'partner', applicationStatus: 'pending' });
+    } else {
+      userCount = demoUsers.filter(u => u.role === 'user').length;
+      partnerCount = demoUsers.filter(u => u.role === 'partner' && u.applicationStatus === 'approved').length;
+      pendingPartnersCount = demoUsers.filter(u => u.role === 'partner' && u.applicationStatus === 'pending').length;
+    }
+    
+    const bookingsCount = bookings.length;
+    const totalRevenue = bookings.reduce((sum, b) => sum + (Number(b.amount) || 0), 0);
+    
+    res.json({
+      success: true,
+      data: {
+        users: userCount,
+        partners: partnerCount,
+        pendingPartners: pendingPartnersCount,
+        bookings: bookingsCount,
+        revenue: totalRevenue
+      },
+      isDemo: mongoose.connection.readyState !== 1
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// =========================
+// DELETE USER (ADMIN ONLY)
+// =========================
+app.delete("/api/admin/users/:userId", verifyAdminRequest, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    if (mongoose.connection.readyState === 1 && mongoose.Types.ObjectId.isValid(userId)) {
+      const deletedUser = await User.findByIdAndDelete(userId);
+      if (!deletedUser) {
+        return res.status(404).json({ success: false, error: "User not found" });
+      }
+      res.json({ success: true, message: "User deleted successfully", user: deletedUser });
+    } else {
+      const index = demoUsers.findIndex(u => u._id === userId);
+      if (index === -1) {
+        return res.status(404).json({ success: false, error: "User not found" });
+      }
+      const deletedUser = demoUsers.splice(index, 1)[0];
+      res.json({ success: true, message: "User deleted successfully (Demo Mode)", user: deletedUser, isDemo: true });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// =========================
+// GET ALL BOOKINGS (ADMIN ONLY)
+// =========================
+app.get("/api/admin/bookings", verifyAdminRequest, async (req, res) => {
+  try {
+    const enrichedBookings = await Promise.all(
+      bookings.map(async (booking) => {
+        let userDetail = null;
+        if (mongoose.connection.readyState === 1 && mongoose.Types.ObjectId.isValid(booking.userId)) {
+          userDetail = await User.findById(booking.userId);
+        }
+        if (!userDetail) {
+          userDetail = demoUsers.find(u => u._id === booking.userId);
+        }
+        
+        let business = businesses.find((b) => b.id === parseInt(booking.businessId));
+        if (!business && mongoose.connection.readyState === 1 && mongoose.Types.ObjectId.isValid(booking.businessId)) {
+          const provider = await User.findById(booking.businessId);
+          if (provider && provider.role === 'partner') {
+            business = {
+              id: provider._id,
+              name: provider.name,
+              category: provider.category,
+              phone: provider.mobile,
+              email: provider.email,
+              location: provider.location || 'To be updated',
+            };
+          }
+        }
+        return {
+          ...booking,
+          userName: userDetail ? userDetail.name : "Unknown User",
+          userMobile: userDetail ? userDetail.mobile : "N/A",
+          businessName: business ? business.name : "Unknown Business"
+        };
+      })
+    );
+    res.json({ success: true, data: enrichedBookings, isDemo: mongoose.connection.readyState !== 1 });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// =========================
+// GET ALL REVIEWS (ADMIN ONLY)
+// =========================
+app.get("/api/admin/reviews", verifyAdminRequest, async (req, res) => {
+  try {
+    const enrichedReviews = await Promise.all(
+      reviews.map(async (review) => {
+        let userDetail = null;
+        if (mongoose.connection.readyState === 1 && mongoose.Types.ObjectId.isValid(review.userId)) {
+          userDetail = await User.findById(review.userId);
+        }
+        if (!userDetail) {
+          userDetail = demoUsers.find(u => u._id === review.userId);
+        }
+        
+        let business = businesses.find((b) => b.id === parseInt(review.businessId));
+        if (!business && mongoose.connection.readyState === 1 && mongoose.Types.ObjectId.isValid(review.businessId)) {
+          const provider = await User.findById(review.businessId);
+          if (provider) {
+            business = { name: provider.name };
+          }
+        }
+        
+        return {
+          ...review,
+          userName: userDetail ? userDetail.name : "Unknown User",
+          businessName: business ? business.name : "Unknown Business"
+        };
+      })
+    );
+    res.json({ success: true, data: enrichedReviews, isDemo: mongoose.connection.readyState !== 1 });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// =========================
+// DELETE REVIEW (ADMIN ONLY)
+// =========================
+app.delete("/api/admin/reviews/:reviewId", verifyAdminRequest, (req, res) => {
+  try {
+    const index = reviews.findIndex(r => r.id === req.params.reviewId);
+    if (index === -1) {
+      return res.status(404).json({ success: false, error: "Review not found" });
+    }
+    const deletedReview = reviews.splice(index, 1)[0];
+    
+    // Recompute rating for the business
+    const business = businesses.find(b => b.id === parseInt(deletedReview.businessId));
+    if (business) {
+      const businessReviews = reviews.filter(r => r.businessId === deletedReview.businessId);
+      if (businessReviews.length > 0) {
+        const avgRating = businessReviews.reduce((sum, r) => sum + r.rating, 0) / businessReviews.length;
+        business.rating = Math.round(avgRating * 10) / 10;
+        business.reviews = businessReviews.length;
+      } else {
+        business.rating = 0;
+        business.reviews = 0;
+      }
+    }
+    
+    res.json({ success: true, message: "Review deleted successfully", data: deletedReview, isDemo: mongoose.connection.readyState !== 1 });
+  } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 });
